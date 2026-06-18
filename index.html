@@ -1,1452 +1,1355 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="h-full bg-slate-950 text-slate-100">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FIFA World Cup 2026™ Matchday Console</title>
-    <!-- Tailwind CSS for responsive styling -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome Icons for badges and status indicators -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FIFA World Cup 2026 Predictor Portal</title>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Google Fonts for Football Aesthetic -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,600&family=Montserrat:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  
+  <!-- FontAwesome for Premium Icons & Badge Symbols -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                        mono: ['JetBrains Mono', 'monospace'],
-                    },
-                    colors: {
-                        brand: {
-                            dark: '#070a13',
-                            deep: '#0f1322',
-                            card: '#161b30',
-                            accent: '#10b981', // Neon emerald for active elements
-                            secondary: '#6366f1', // Indigo primary
-                            gold: '#f59e0b', // Gold trophy accent
-                            red: '#ef4444' // Warnings & red cards
-                        }
-                    },
-                    animation: {
-                        'pulse-fast': 'pulse 1.2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-                        'spin-slow': 'spin 3s linear infinite',
-                    }
-                }
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Montserrat', 'sans-serif'],
+            sport: ['Chakra Petch', 'sans-serif'],
+          },
+          screens: {
+            'xs': '375px',
+          },
+          colors: {
+            emerald: {
+              500: '#10b981',
+              600: '#059669',
+              400: '#34d399',
+              900: '#064e3b',
             }
+          }
         }
-    </script>
+      }
+    }
+  </script>
 
-    <style>
-        body {
-            -webkit-font-smoothing: antialiased;
-            background-color: #070a13;
-        }
-        /* Custom scrollbars matching stadium-dark theme */
-        ::-webkit-scrollbar { width: 8px; height: 8px; }
-        ::-webkit-scrollbar-track { background: #070a13; }
-        ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #334155; }
+  <style>
+    html {
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+    }
+    
+    .font-sporty {
+      font-family: 'Chakra Petch', sans-serif;
+    }
+    
+    .glow-emerald {
+      box-shadow: 0 0 15px rgba(16, 185, 129, 0.20);
+    }
+    
+    .glow-emerald-lg {
+      box-shadow: 0 0 25px rgba(16, 185, 129, 0.45);
+    }
 
-        .stadium-card {
-            background: linear-gradient(135deg, rgba(22, 27, 48, 0.9) 0%, rgba(15, 19, 34, 0.9) 100%);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .stadium-card:hover {
-            border-color: rgba(99, 102, 241, 0.4);
-            transform: translateY(-2px);
-            box-shadow: 0 12px 24px -10px rgba(0, 0, 0, 0.5);
-        }
-        .glass-panel {
-            background: rgba(15, 19, 34, 0.75);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-        }
-        .live-glow {
-            box-shadow: 0 0 15px rgba(16, 185, 129, 0.15);
-        }
-        .nav-tab.active {
-            border-bottom: 2px solid #10b981;
-            color: #10b981;
-            font-weight: 700;
-        }
-        .log-terminal {
-            background-color: #030712;
-            font-family: 'JetBrains Mono', monospace;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        }
-    </style>
+    /* Podium Medal Animations */
+    @keyframes pulse-gold {
+      0%, 100% { transform: scale(1); filter: drop-shadow(0 0 4px rgba(250, 204, 21, 0.6)); }
+      50% { transform: scale(1.1); filter: drop-shadow(0 0 12px rgba(250, 204, 21, 0.9)); }
+    }
+    @keyframes pulse-diamond {
+      0%, 100% { transform: scale(1); filter: drop-shadow(0 0 4px rgba(56, 189, 248, 0.6)); }
+      50% { transform: scale(1.1); filter: drop-shadow(0 0 12px rgba(56, 189, 248, 0.9)); }
+    }
+    @keyframes pulse-silver {
+      0%, 100% { transform: scale(1); filter: drop-shadow(0 0 4px rgba(148, 163, 184, 0.5)); }
+      50% { transform: scale(1.1); filter: drop-shadow(0 0 10px rgba(148, 163, 184, 0.8)); }
+    }
+
+    .animate-gold {
+      animation: pulse-gold 2s infinite ease-in-out;
+    }
+    .animate-diamond {
+      animation: pulse-diamond 2.2s infinite ease-in-out;
+    }
+    .animate-silver {
+      animation: pulse-silver 2.4s infinite ease-in-out;
+    }
+
+    .tab-content {
+      transition: all 0.3s ease-in-out;
+    }
+  </style>
 </head>
-<body class="text-gray-100 min-h-screen flex flex-col">
+<body class="bg-slate-950 text-slate-100 flex flex-col min-h-screen selection:bg-emerald-500 selection:text-slate-900 overflow-x-hidden">
 
-    <header class="glass-panel border-b border-slate-800/80 sticky top-0 z-40 shadow-xl">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex flex-col sm:flex-row justify-between items-center gap-4">
-            <div class="flex items-center gap-3.5">
-                <div class="w-12 h-12 rounded-xl bg-gradient-to-tr from-indigo-600 to-emerald-500 flex items-center justify-center font-black text-xl shadow-lg border border-white/10">
-                    <i class="fa-solid fa-trophy text-yellow-400 animate-bounce"></i>
-                </div>
-                <div>
-                    <h1 class="text-lg font-black tracking-wider text-white flex items-center gap-2">
-                        FIFA WORLD CUP 2026™ <span class="text-[10px] uppercase font-bold tracking-widest bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded">Live Grounded Hub</span>
-                    </h1>
-                    <p class="text-xs text-slate-400 font-medium">United States | Canada | Mexico • Dynamic Google Search Grounding</p>
-                </div>
-            </div>
+  <header class="sticky top-0 z-40 backdrop-blur-md bg-slate-950/80 border-b border-slate-800 px-3 md:px-4 py-3">
+    <div class="max-w-7xl mx-auto flex justify-between items-center">
+      
+      <!-- Brand Logo -->
+      <div class="flex items-center space-x-2.5 cursor-pointer" onclick="switchTab('predictions')">
+        <div class="bg-gradient-to-tr from-emerald-600 to-teal-400 p-1.5 xs:p-2 rounded-xl text-slate-950 font-bold flex items-center justify-center shadow-lg">
+          <i class="fa-solid fa-trophy text-base xs:text-lg"></i>
+        </div>
+        <div>
+          <h1 class="text-lg xs:text-xl md:text-2xl font-black tracking-tight font-sporty bg-clip-text text-transparent bg-gradient-to-r from-emerald-400 to-teal-200">
+            FIFA 2026 <span class="text-slate-100 text-[10px] xs:text-xs font-light uppercase tracking-widest block sm:inline sm:ml-1 sm:border-l sm:border-slate-700 sm:pl-2">Predictor</span>
+          </h1>
+        </div>
+      </div>
 
-            <div class="flex items-center gap-4">
-                <div class="text-right">
-                    <div class="flex items-center gap-2 justify-end">
-                        <span id="simulation-indicator" class="w-2.5 h-2.5 bg-sky-500 rounded-full animate-pulse-fast"></span>
-                        <p class="text-sm font-mono font-bold text-white" id="current-clock-display">Synchronizing...</p>
-                    </div>
-                    <p class="text-[10px] text-slate-400 font-semibold uppercase tracking-wider" id="timezone-badge-text">Bound to Local Time</p>
-                </div>
-            </div>
+      <!-- Right Side Controls -->
+      <div class="flex items-center space-x-2 xs:space-x-4">
+        <!-- Live Sync Status Banner -->
+        <div id="sync-pill" class="hidden lg:flex items-center space-x-2 bg-emerald-950/60 border border-emerald-800/60 text-emerald-400 px-3 py-1 rounded-full text-xs font-semibold">
+          <span class="relative flex h-2 w-2">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+          </span>
+          <span>Synced to Live Database</span>
         </div>
 
-        <nav class="bg-brand-dark border-t border-slate-900/60">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="flex justify-between items-center overflow-x-auto">
-                    <ul class="flex space-x-6 py-2" id="nav-tabs">
-                        <li>
-                            <button onclick="setFilter('all')" class="nav-tab active py-2 px-1 text-xs font-semibold text-slate-400 hover:text-white transition-colors" data-filter="all">
-                                All Fixtures
-                            </button>
-                        </li>
-                        <li>
-                            <button onclick="setFilter('live')" class="nav-tab py-2 px-1 text-xs font-semibold text-slate-400 hover:text-white flex items-center gap-1.5 transition-colors" data-filter="live">
-                                <span id="filter-live-dot" class="w-1.5 h-1.5 rounded-full bg-slate-500"></span> Live Matches
-                            </button>
-                        </li>
-                        <li>
-                            <button onclick="setFilter('upcoming')" class="nav-tab py-2 px-1 text-xs font-semibold text-slate-400 hover:text-white transition-colors" data-filter="upcoming">
-                                Upcoming
-                            </button>
-                        </li>
-                        <li>
-                            <button onclick="setFilter('completed')" class="nav-tab py-2 px-1 text-xs font-semibold text-slate-400 hover:text-white transition-colors" data-filter="completed">
-                                Finished (Highlights)
-                            </button>
-                        </li>
-                    </ul>
-                    <div class="hidden md:flex items-center gap-2 text-xs text-indigo-400 bg-brand-deep border border-slate-800/80 rounded-lg px-2.5 py-1">
-                        <i class="fa-solid fa-cloud-arrow-down"></i>
-                        <span>Auto-updates with daily real World Cup scores.</span>
-                    </div>
-                </div>
-            </div>
-        </nav>
-    </header>
-
-    <section class="bg-slate-950 border-b border-slate-900 p-4">
-        <div class="max-w-7xl mx-auto space-y-4">
-
-            <!-- Real-time Google Search Grounding Control Card -->
-            <div class="glass-panel rounded-xl p-4 flex flex-col xl:flex-row items-center justify-between gap-4">
-                <div class="flex items-start gap-3.5">
-                    <div class="w-11 h-11 rounded-lg bg-emerald-500/10 flex items-center justify-center text-emerald-400 shrink-0 text-lg">
-                        <i class="fa-solid fa-arrows-spin animate-spin-slow"></i>
-                    </div>
-                    <div>
-                        <div class="flex items-center gap-2 flex-wrap">
-                            <h2 class="text-sm font-bold text-white">Verified FIFA 2026 Real-Time Live Grounding Connector</h2>
-                            <span class="text-[10px] bg-indigo-500/10 text-indigo-300 font-mono border border-indigo-500/20 px-2 py-0.5 rounded flex items-center gap-1">
-                                <i class="fa-solid fa-server text-[8px] animate-ping"></i> Gemini-3-Flash Connected
-                            </span>
-                        </div>
-                        <p class="text-xs text-slate-400 mt-1">Queries the web via Google Search to automatically update scores, timelines, and goal tallies for completed or ongoing matches.</p>
-                    </div>
-                </div>
-
-                <!-- Grounding Actions -->
-                <div class="flex flex-wrap items-center gap-3 w-full xl:w-auto shrink-0">
-                    <button id="btn-sync-api" onclick="syncWorldCupData()" class="flex-1 xl:flex-none px-4 py-2.5 rounded-lg bg-gradient-to-r from-emerald-600 to-teal-500 border border-emerald-400/20 hover:from-emerald-500 hover:to-teal-400 text-xs font-bold text-white flex items-center justify-center gap-2 transition-all shadow-lg shadow-emerald-950/20">
-                        <i class="fa-solid fa-magnifying-glass-chart"></i> Search & Sync Live Scores
-                    </button>
-                    <button id="btn-reset-db" onclick="resetToLocalDatabase()" class="flex-1 xl:flex-none px-3.5 py-2.5 rounded-lg bg-slate-900 border border-slate-800 hover:border-slate-700 hover:bg-slate-850 text-xs font-semibold text-slate-400 flex items-center justify-center gap-2 transition-all">
-                        <i class="fa-solid fa-arrow-rotate-left"></i> Restore Local Baseline
-                    </button>
-                </div>
+        <!-- Profile Widget -->
+        <div class="relative" id="profile-container">
+          <button id="profile-btn" class="flex items-center space-x-1.5 xs:space-x-2 bg-slate-900 hover:bg-slate-800 transition-colors border border-slate-700 px-2.5 xs:px-3 py-1.5 rounded-full text-xs xs:text-sm">
+            <i class="fa-solid fa-circle-user text-base xs:text-lg text-emerald-400"></i>
+            <span id="nav-user-email" class="max-w-[80px] xs:max-w-[120px] md:max-w-[180px] truncate font-medium">Guest User</span>
+            <i class="fa-solid fa-caret-down text-[10px] text-slate-400"></i>
+          </button>
+          
+          <!-- Dropdown menu (Enriched with Score Actions, Sync Buttons and Automated Scheduler Info) -->
+          <div id="profile-dropdown" class="hidden absolute right-0 mt-2 w-64 xs:w-72 bg-slate-900 border border-slate-800 rounded-xl shadow-xl py-2.5 z-50">
+            <div class="px-4 py-2 border-b border-slate-800">
+              <p class="text-[10px] text-slate-400">Signed in as</p>
+              <p class="text-xs xs:text-sm font-semibold truncate text-slate-100" id="dropdown-user-email">guest@fifa.com</p>
+              
+              <!-- Points Sub-widget -->
+              <div class="mt-2 bg-slate-950/80 px-2.5 py-1.5 rounded border border-slate-800 flex justify-between items-center">
+                <span class="text-[10px] text-slate-400">Your Current Score:</span>
+                <span class="text-xs font-bold text-emerald-400 font-sporty" id="dropdown-user-points">0 pts</span>
+              </div>
             </div>
 
-            <!-- Log Terminal / Search Output Tracking Panel -->
-            <div id="log-terminal-panel" class="hidden log-terminal rounded-xl p-4 border border-slate-800 flex flex-col gap-3">
-                <div class="flex justify-between items-center border-b border-slate-800 pb-2">
-                    <div class="flex items-center gap-2 text-xs font-bold text-emerald-400">
-                        <i class="fa-solid fa-terminal text-[10px]"></i>
-                        <span>AI API Grounding Stream Ticker</span>
-                    </div>
-                    <button onclick="hideTerminal()" class="text-slate-500 hover:text-slate-300 text-xs">
-                        <i class="fa-solid fa-eye-slash"></i> Dismiss Terminal
-                    </button>
-                </div>
-                <div id="log-outputs" class="space-y-1.5 text-xs text-slate-300 max-h-40 overflow-y-auto font-mono">
-                    <!-- Logs populated programmatically -->
-                </div>
-                <!-- Citation Sources display -->
-                <div id="citation-container" class="hidden border-t border-slate-800/80 pt-2 flex flex-col gap-1 text-[11px] text-slate-400">
-                    <p class="font-bold text-slate-500 uppercase tracking-widest text-[9px]"><i class="fa-solid fa-quote-left text-[8px]"></i> Grounded Citation Sources:</p>
-                    <div id="citation-links" class="flex flex-wrap gap-x-4 gap-y-1.5 font-sans mt-0.5">
-                        <!-- Citations parsed dynamically from search attribution -->
-                    </div>
-                </div>
+            <div class="px-2 py-1.5 border-b border-slate-800 space-y-1">
+              <button id="menu-sync-btn" onclick="triggerManualSync()" class="w-full text-left px-3 py-2 text-xs text-slate-200 hover:bg-slate-800 hover:text-slate-100 rounded-lg flex items-center justify-between transition-colors">
+                <span class="flex items-center space-x-2">
+                  <i class="fa-solid fa-rotate text-emerald-400"></i>
+                  <span>Sync & Claim Points</span>
+                </span>
+                <span class="text-[9px] bg-slate-950 text-slate-400 px-1.5 py-0.5 rounded">Manual</span>
+              </button>
+              
+              <button onclick="resetAllPredictions()" class="w-full text-left px-3 py-2 text-xs text-rose-300 hover:bg-rose-950/20 hover:text-rose-200 rounded-lg flex items-center space-x-2 transition-colors">
+                <i class="fa-solid fa-trash-can"></i>
+                <span>Reset All & Clear Score</span>
+              </button>
             </div>
 
-            <div class="glass-panel rounded-xl p-4 flex flex-col lg:flex-row items-center justify-between gap-4">
-                <div class="flex items-center gap-3">
-                    <div class="w-9 h-9 rounded-lg bg-indigo-500/10 flex items-center justify-center text-indigo-400 text-sm">
-                        <i class="fa-solid fa-clock-rotate-left"></i>
-                    </div>
-                    <div>
-                        <h2 class="text-sm font-bold text-white">Dynamic Matchday Console Timeline Controller</h2>
-                        <p class="text-xs text-slate-400">Optionally travel in time manually to trigger live score increments.</p>
-                    </div>
-                </div>
-
-                <div class="flex flex-wrap items-center gap-3 w-full lg:w-auto">
-                    <button id="btn-realtime" onclick="toggleClockMode('real')" class="flex-1 lg:flex-none px-3.5 py-2 rounded-lg bg-indigo-600 border border-indigo-500 hover:bg-indigo-500 text-xs font-semibold text-white flex items-center justify-center gap-2 transition-all shadow-lg">
-                        <i class="fa-solid fa-clock"></i> Sync Device Time (Real-Time)
-                    </button>
-                    <button id="btn-simulated" onclick="toggleClockMode('sim')" class="flex-1 lg:flex-none px-3.5 py-2 rounded-lg bg-slate-900 border border-slate-800 hover:border-slate-700 hover:bg-slate-850 text-xs font-semibold text-slate-300 flex items-center justify-center gap-2 transition-all">
-                        <i class="fa-solid fa-sliders"></i> Switch to Time-Travel Simulator
-                    </button>
-                </div>
+            <!-- Automated System Scheduler Info Panel -->
+            <div class="px-4 py-2 text-[10px] border-b border-slate-800 bg-slate-950/30">
+              <p class="font-bold text-emerald-400 uppercase tracking-wider font-sporty mb-1">
+                <i class="fa-regular fa-calendar-check mr-1 text-emerald-400"></i>
+                Database Scheduler Runs
+              </p>
+              <p class="text-slate-400 leading-tight">Everyday 3 times (UTC +6 Dhaka):</p>
+              <div class="flex gap-2 mt-1 mb-1.5 font-sporty font-medium text-slate-300">
+                <span class="bg-slate-950/80 px-1 py-0.5 rounded">01:30 AM</span>
+                <span class="bg-slate-950/80 px-1 py-0.5 rounded">05:30 AM</span>
+                <span class="bg-slate-950/80 px-1 py-0.5 rounded">09:30 AM</span>
+              </div>
+              <div class="text-slate-400">
+                Next scheduled evaluation:
+                <span id="next-auto-run" class="text-emerald-400 font-bold block mt-0.5">Calculating...</span>
+              </div>
             </div>
-
-            <div id="sim-control-panel" class="hidden bg-brand-deep border border-slate-800/60 rounded-xl p-4 grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div class="flex flex-col gap-1">
-                    <label class="text-xs text-slate-400 font-bold uppercase tracking-wider">Simulated Matchday Presets:</label>
-                    <select id="preset-select" onchange="applyPresetDate(this.value)" class="bg-slate-950 border border-slate-800 text-slate-300 rounded-lg p-2 text-xs focus:ring-1 focus:ring-indigo-500">
-                        <option value="june11">June 11, 2026 - Opening Matches (Finished)</option>
-                        <option value="june14">June 14, 2026 - Matchday 4 (Finished)</option>
-                        <option value="june15-morning">June 15, 2026 - 10:00 AM ET / 14:00 UTC (Upcoming)</option>
-                        <option value="june15-midday" selected>June 15, 2026 - 1:15 PM ET / 17:15 UTC (Spain vs Cabo Verde LIVE)</option>
-                        <option value="june15-afternoon">June 15, 2026 - 4:20 PM ET / 20:20 UTC (Belgium vs Egypt LIVE)</option>
-                        <option value="june15-evening">June 15, 2026 - 7:30 PM ET / 23:30 UTC (Saudi vs Uruguay LIVE)</option>
-                        <option value="june16">June 16, 2026 - Matchday 6 (Upcoming)</option>
-                    </select>
-                </div>
-
-                <div class="flex flex-col gap-1">
-                    <label class="text-xs text-slate-400 font-bold uppercase tracking-wider">Hourly Slide Adjuster (UTC):</label>
-                    <div class="flex items-center gap-3">
-                        <input type="range" id="hour-slider" min="0" max="23" value="17" oninput="adjustHour(this.value)" class="w-full accent-indigo-500 cursor-pointer">
-                        <span id="slider-hour-label" class="text-xs font-mono font-bold text-indigo-400 bg-indigo-500/10 border border-indigo-500/20 px-2 py-0.5 rounded">17:00 UTC</span>
-                    </div>
-                </div>
-
-                <div class="flex items-center justify-end">
-                    <span id="simulation-status" class="text-xs bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 px-3 py-1.5 rounded-lg flex items-center gap-2">
-                        <i class="fa-solid fa-gamepad animate-bounce"></i> Match simulation engine active
-                    </span>
-                </div>
-            </div>
+            
+            <button id="logout-btn" class="w-full text-left px-4 py-2.5 text-xs xs:text-sm text-rose-400 hover:bg-rose-950/10 hover:text-rose-300 flex items-center space-x-2 mt-1">
+              <i class="fa-solid fa-right-from-bracket"></i>
+              <span>Sign Out</span>
+            </button>
+          </div>
         </div>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- Notification Banner Center Container -->
+  <div id="toast-container" class="fixed top-20 right-4 left-4 sm:left-auto sm:right-4 z-50 flex flex-col space-y-2 max-w-sm pointer-events-none"></div>
+
+  <!-- Main Content Wrapper -->
+  <main class="flex-grow max-w-7xl w-full mx-auto p-3 xs:p-4 flex flex-col justify-center">
+
+    <!-- AUTHENTICATION VIEW (Hidden once logged in) -->
+    <section id="auth-view" class="w-full max-w-md mx-auto my-4 xs:my-8 bg-slate-900 border border-slate-800 rounded-2xl p-5 xs:p-6 md:p-8 shadow-2xl relative overflow-hidden">
+      <!-- Background Pitch Overlay -->
+      <div class="absolute inset-0 opacity-[0.03] pointer-events-none" style="background-image: radial-gradient(circle at center, #10b981 1px, transparent 1px); background-size: 24px 24px;"></div>
+      
+      <div class="text-center mb-6 xs:mb-8 relative">
+        <div class="inline-flex p-2.5 xs:p-3 bg-emerald-950/80 rounded-2xl text-emerald-400 border border-emerald-800/50 mb-3 animate-bounce">
+          <i class="fa-solid fa-soccer-ball text-2xl xs:text-3xl"></i>
+        </div>
+        <h2 class="text-xl xs:text-2xl font-black font-sporty" id="auth-title">Welcome to Stadium Portal</h2>
+        <p class="text-[11px] xs:text-xs text-slate-400 mt-1">Sign in to predict live fixtures and climb the rank table</p>
+      </div>
+
+      <!-- Error Message Area -->
+      <div id="auth-error-box" class="hidden mb-4 p-3 bg-rose-950/60 border border-rose-800/80 rounded-xl text-rose-300 text-xs flex items-start space-x-2">
+        <i class="fa-solid fa-circle-exclamation mt-0.5 flex-shrink-0"></i>
+        <span id="auth-error-msg">Failed to authenticate. Please review login info.</span>
+      </div>
+
+      <!-- Optimized mobile form input font-sizes to avoid iOS zoom issues -->
+      <form id="auth-form" class="space-y-4">
+        <div>
+          <label class="block text-[10px] xs:text-xs font-bold text-slate-400 uppercase tracking-wider mb-1.5" for="auth-email">Email Address</label>
+          <div class="relative">
+            <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-500">
+              <i class="fa-solid fa-envelope text-xs"></i>
+            </span>
+            <input type="email" id="auth-email" required class="w-full bg-slate-950 border border-slate-800 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 rounded-xl py-2.5 xs:py-3 pl-10 pr-4 text-base md:text-sm text-slate-200 placeholder-slate-600 transition-colors outline-none" placeholder="striker@fifa2026.com">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-[10px] xs:text-xs font-bold text-slate-400 uppercase tracking-wider mb-1.5" for="auth-password">Password</label>
+          <div class="relative">
+            <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-500">
+              <i class="fa-solid fa-lock text-xs"></i>
+            </span>
+            <input type="password" id="auth-password" required minlength="6" class="w-full bg-slate-950 border border-slate-800 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 rounded-xl py-2.5 xs:py-3 pl-10 pr-4 text-base md:text-sm text-slate-200 placeholder-slate-600 transition-colors outline-none" placeholder="••••••••">
+          </div>
+        </div>
+
+        <button type="submit" id="auth-submit-btn" class="w-full mt-2 bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 font-bold rounded-xl py-3 text-xs xs:text-sm hover:opacity-90 transition-opacity font-sporty tracking-wide shadow-lg">
+          LOG IN TO PORTAL
+        </button>
+      </form>
+
+      <div class="mt-6 text-center text-xs">
+        <span class="text-slate-500" id="auth-toggle-desc">Don't have an active predictor profile?</span>
+        <button id="auth-toggle-btn" class="text-emerald-400 hover:text-emerald-300 font-semibold ml-1 underline transition-colors">Create Profile</button>
+      </div>
     </section>
 
-    <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 w-full">
-        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-            <div class="stadium-card p-4 rounded-xl flex items-center gap-4">
-                <div class="w-10 h-10 rounded-lg bg-indigo-500/10 flex items-center justify-center text-indigo-400">
-                    <i class="fa-solid fa-circle-check"></i>
-                </div>
-                <div>
-                    <p class="text-xs text-slate-400">Finished Matches</p>
-                    <p class="text-xl font-black text-white" id="stat-completed">0</p>
-                </div>
+    <!-- DASHBOARD VIEW (Hidden until user logs in) -->
+    <section id="dashboard-view" class="hidden w-full space-y-4 xs:space-y-6 animate-fade-in py-2">
+      
+      <!-- HERO HUD CARD: Clean design focusing directly on "TOTAL PREDICTOR SCORE" as requested -->
+      <div class="bg-gradient-to-br from-slate-900 to-slate-950 border border-slate-800 p-5 md:p-6 rounded-2xl shadow-2xl relative overflow-hidden">
+        <div class="absolute right-0 bottom-0 opacity-[0.05] text-slate-600 transform translate-x-4 translate-y-4 scale-150">
+          <i class="fa-solid fa-star text-9xl text-amber-500"></i>
+        </div>
+        
+        <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            <p class="text-xs font-bold text-amber-400 uppercase tracking-widest font-sporty flex items-center gap-1.5">
+              <span class="flex h-2 w-2 relative">
+                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+                <span class="relative inline-flex rounded-full h-2 w-2 bg-amber-500"></span>
+              </span>
+              <span>Total Predictor Score</span>
+            </p>
+            <div class="flex items-baseline space-x-2 mt-1">
+              <span class="text-4xl xs:text-5xl md:text-6xl font-black font-sporty text-slate-100" id="user-hud-points">0</span>
+              <span class="text-sm font-bold text-amber-400 font-sporty">pts earned</span>
             </div>
+          </div>
 
-            <div class="stadium-card p-4 rounded-xl flex items-center gap-4" id="stat-live-card">
-                <div class="w-10 h-10 rounded-lg bg-slate-800 flex items-center justify-center text-slate-400" id="stat-live-icon-holder">
-                    <i class="fa-solid fa-signal" id="stat-live-icon"></i>
-                </div>
-                <div>
-                    <p class="text-xs text-slate-400">Matches Live Now</p>
-                    <p class="text-xl font-black text-white" id="stat-live">0</p>
-                </div>
-            </div>
+          <div class="bg-slate-950/80 border border-slate-800/80 rounded-xl p-3 md:max-w-md text-xs text-slate-400 space-y-1">
+            <p class="font-semibold text-slate-300">Predictor Scoring System Matrix:</p>
+            <p><span class="text-emerald-400 font-bold font-sporty">• 3 points</span>: Correct outcome (Win/Loss prediction matches actual, or Correct Tie prediction).</p>
+            <p><span class="text-amber-400 font-bold font-sporty">• 1 point</span>: Predicted Win outcome (Team 1 or 2), but result ended in a Draw.</p>
+            <p><span class="text-slate-500 font-bold font-sporty">• 0 points</span>: Incorrect predictions.</p>
+          </div>
+        </div>
+      </div>
 
-            <div class="stadium-card p-4 rounded-xl flex items-center gap-4">
-                <div class="w-10 h-10 rounded-lg bg-amber-500/10 flex items-center justify-center text-amber-400">
-                    <i class="fa-solid fa-hourglass-start"></i>
-                </div>
-                <div>
-                    <p class="text-xs text-slate-400">Upcoming Fixtures</p>
-                    <p class="text-xl font-black text-white" id="stat-upcoming">0</p>
-                </div>
-            </div>
+      <!-- Dual Navigation Tabs (Predictions vs Leaderboard) - Adaptive layout flex and layout -->
+      <div class="border-b border-slate-800 flex flex-col sm:flex-row justify-between items-stretch sm:items-center pt-2 gap-3 sm:gap-0">
+        <div class="flex space-x-2 sm:space-x-6 w-full sm:w-auto">
+          <button id="tab-btn-predictions" onclick="switchTab('predictions')" class="flex-1 sm:flex-initial border-b-2 border-emerald-500 text-emerald-400 pb-3 px-1 text-xs xs:text-sm md:text-base font-bold font-sporty tracking-wide transition-all flex items-center justify-center sm:justify-start space-x-2">
+            <i class="fa-solid fa-calendar-check text-[10px] xs:text-xs"></i>
+            <span>Matches & Predictions</span>
+          </button>
+          <button id="tab-btn-leaderboard" onclick="switchTab('leaderboard')" class="flex-1 sm:flex-initial border-b-2 border-transparent text-slate-400 hover:text-slate-200 pb-3 px-1 text-xs xs:text-sm md:text-base font-bold font-sporty tracking-wide transition-all flex items-center justify-center sm:justify-start space-x-2">
+            <i class="fa-solid fa-ranking-star text-[10px] xs:text-xs"></i>
+            <span>Leaderboard</span>
+          </button>
+        </div>
+        
+        <!-- Live count tag -->
+        <div id="predictions-count-tag" class="text-[10px] xs:text-xs text-slate-400 font-sporty bg-slate-900 border border-slate-800 px-3 py-1.5 rounded-full text-center">
+          Total Predictions Made: <span class="text-emerald-400 font-bold" id="saved-predictions-counter">0</span>
+        </div>
+      </div>
 
-            <div class="stadium-card p-4 rounded-xl flex items-center gap-4">
-                <div class="w-10 h-10 rounded-lg bg-pink-500/10 flex items-center justify-center text-pink-400">
-                    <i class="fa-solid fa-futbol"></i>
-                </div>
-                <div>
-                    <p class="text-xs text-slate-400">Goals Scored</p>
-                    <p class="text-xl font-black text-white" id="stat-goals">0</p>
-                </div>
-            </div>
+      <!-- Tab Area 1: Predictions -->
+      <div id="tab-content-predictions" class="tab-content space-y-4 xs:space-y-6">
+        
+        <!-- Quick State Filter / Help Info -->
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-slate-900/60 border border-slate-800 p-3.5 xs:p-4 rounded-xl">
+          <div class="text-[10px] xs:text-xs text-slate-400 space-y-1.5">
+            <p><span class="inline-block w-2 h-2 rounded-full bg-blue-500 mr-1.5 animate-pulse"></span> <strong class="text-slate-200">Upcoming Match:</strong> Fully open for prediction. Edit anytime before match starts.</p>
+            <p><span class="inline-block w-2 h-2 rounded-full bg-emerald-500 mr-1.5"></span> <strong class="text-slate-200">Live Match:</strong> Match in progress. Predictions are strictly locked.</p>
+            <p><span class="inline-block w-2 h-2 rounded-full bg-slate-600 mr-1.5"></span> <strong class="text-slate-200">Completed Match:</strong> Match finished. Points have been calculated.</p>
+          </div>
+          
+          <div class="flex items-center justify-between md:justify-end space-x-2 border-t border-slate-800/60 md:border-t-0 pt-3 md:pt-0">
+            <span class="text-[10px] xs:text-xs text-slate-400 font-sporty uppercase tracking-wide">Filter Stages:</span>
+            <!-- Responsive selector height/width for touch navigation -->
+            <select id="match-group-filter" onchange="renderMatches()" class="bg-slate-950 border border-slate-800 text-xs rounded-lg px-2.5 py-1.5 text-slate-300 outline-none focus:border-emerald-500 min-h-[35px]">
+              <option value="ALL">All Match Stages</option>
+              <option value="Upcoming">Upcoming Only</option>
+              <option value="Live">Live Only</option>
+              <option value="Completed">Completed Only</option>
+            </select>
+          </div>
         </div>
 
-        <div class="flex justify-between items-end mb-6">
-            <div>
-                <h3 class="text-xl font-black text-white tracking-tight flex items-center gap-2">
-                    <i class="fa-regular fa-calendar-days text-indigo-400"></i>
-                    <span id="section-title">All Tournament Fixtures</span>
-                </h3>
-                <p class="text-xs text-slate-400 mt-1">Official matches grounded and dynamically verified via AI search sync.</p>
-            </div>
-
-            <div class="flex items-center gap-3 text-xs">
-                <span class="flex items-center gap-1.5 text-slate-400"><span class="w-2.5 h-2.5 rounded-full bg-slate-800 border border-slate-700"></span> Upcoming</span>
-                <span class="flex items-center gap-1.5 text-emerald-400" id="legend-live-indicator"><span class="w-2.5 h-2.5 rounded-full bg-slate-500" id="legend-live-dot"></span> Live</span>
-                <span class="flex items-center gap-1.5 text-indigo-400"><span class="w-2.5 h-2.5 rounded bg-indigo-500"></span> Full-Time</span>
-            </div>
+        <!-- Matches Cards Grid Container -->
+        <div id="matches-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4 xs:gap-6">
+          <!-- Dynamically populated via renderMatches() -->
         </div>
 
-        <div id="matches-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <!-- Matches populated dynamically -->
+      </div>
+
+      <!-- Tab Area 2: Leaderboard -->
+      <div id="tab-content-leaderboard" class="tab-content hidden space-y-6">
+        
+        <!-- Podium Highlight Area - Shifted from Grid to Adaptive Flex with Order Utilities for Mobile-first hierarchy -->
+        <div class="flex flex-col md:flex-row gap-4 pt-4 pb-2 justify-center" id="leaderboard-podium">
+          <!-- Top 3 dynamically generated with Diamond, Gold and Silver badges -->
         </div>
-    </main>
 
-    <div id="match-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-brand-dark/95 p-4 backdrop-blur-md transition-all">
-        <div class="bg-brand-deep border border-slate-800 rounded-2xl w-full max-w-4xl overflow-hidden shadow-2xl transform transition-all scale-95" id="match-modal-content">
-            <div class="p-4 border-b border-slate-800 flex justify-between items-center bg-brand-card">
-                <h3 class="text-md font-bold text-white flex items-center gap-2" id="modal-title">
-                    Match Details
-                </h3>
-                <button onclick="closeModal()" class="text-slate-400 hover:text-rose-400 transition-colors w-8 h-8 rounded-full hover:bg-slate-800 flex items-center justify-center">
-                    <i class="fa-solid fa-xmark text-lg"></i>
-                </button>
-            </div>
+        <!-- Rest of Leaderboard Table -->
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-xl">
+          <div class="p-4 border-b border-slate-800 flex justify-between items-center">
+            <h3 class="text-xs xs:text-sm font-bold font-sporty tracking-wider text-slate-300 uppercase">World Standings Table</h3>
+            <span class="text-[10px] text-slate-500">Includes secure privacy masking</span>
+          </div>
 
-            <div class="grid grid-cols-1 lg:grid-cols-2">
-                <!-- Left Details: Media container -->
-                <div class="bg-black flex flex-col justify-center items-center relative aspect-video lg:aspect-auto p-4 min-h-[320px]">
-                    <div id="modal-live-banner" class="absolute top-4 left-4 z-10 hidden bg-rose-600 text-white text-[10px] font-black px-2.5 py-1 rounded shadow-lg animate-pulse-fast uppercase tracking-widest">
-                        LIVE BROADCAST ON-AIR
-                    </div>
-
-                    <div id="media-player-container" class="w-full h-full flex flex-col items-center justify-center text-center">
-                        <div id="highlights-video" class="hidden w-full h-full relative rounded-lg overflow-hidden bg-slate-900 border border-slate-800 flex flex-col justify-center items-center">
-                            <!-- Populated with dynamic high quality thumbnail cover -->
-                        </div>
-
-                        <div id="modal-rights-fallback" class="p-6">
-                            <i class="fa-solid fa-circle-play text-5xl text-indigo-400 mb-3"></i>
-                            <h4 class="text-sm font-bold text-slate-200">Official FIFA Broadcaster Feed</h4>
-                            <p class="text-xs text-slate-400 mt-2 max-w-xs mx-auto text-center">This match has not started or is actively playing. Broadcaster video streams will unlock upon Full-Time status.</p>
-                            <a id="modal-external-link" href="#" target="_blank" class="mt-4 px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs rounded-lg inline-flex items-center gap-2 transition-all">
-                                <i class="fa-solid fa-arrow-up-right-from-square"></i> Open FIFA Match Center
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Right Details: Event Timelines and Stats comparisons -->
-                <div class="p-6 bg-slate-950 max-h-[500px] overflow-y-auto border-t lg:border-t-0 lg:border-l border-slate-800" id="modal-details-panel">
-                    <!-- Loaded dynamically -->
-                </div>
-            </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+              <thead>
+                <tr class="border-b border-slate-800 bg-slate-950 text-slate-400 text-[10px] xs:text-xs uppercase font-sporty">
+                  <th class="py-3 px-3 font-semibold text-center w-12 xs:w-16">Rank</th>
+                  <th class="py-3 px-3 font-semibold">User Profile (Secure Masking)</th>
+                  <th class="py-3 px-3 font-semibold text-right">Predictions</th>
+                  <th class="py-3 px-3 font-semibold text-right pr-4 xs:pr-6">Total Score</th>
+                </tr>
+              </thead>
+              <tbody id="leaderboard-rows" class="divide-y divide-slate-800/60 text-xs xs:text-sm">
+                <!-- Dynamically populated via renderLeaderboard() -->
+              </tbody>
+            </table>
+          </div>
         </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="mt-auto border-t border-slate-900 bg-slate-950/45 py-6 px-4">
+    <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4 text-center md:text-left text-[11px] text-slate-500">
+      <div>
+        <p>&copy; 2026 FIFA World Cup Predictor Portal. Built for sports fans globally.</p>
+        <p class="text-[9px] text-slate-600 mt-1">Prototype using real-time Firebase Auth and localized Firestore integration.</p>
+      </div>
+      <div class="flex flex-wrap justify-center gap-4">
+        <a href="#" class="hover:text-slate-400">Terms of Play</a>
+        <a href="#" class="hover:text-slate-400">Security Guidelines</a>
+        <a href="#" class="hover:text-slate-400">Privacy Policy</a>
+      </div>
     </div>
+  </footer>
 
-    <!-- Global Floating Notification Area for logs/alerts -->
-    <div id="global-alert" class="fixed bottom-6 right-6 z-50 max-w-md hidden">
-        <div class="bg-slate-900 border border-emerald-500/30 text-white p-4 rounded-xl shadow-2xl flex items-start gap-3">
-            <div id="alert-icon" class="w-8 h-8 rounded-full bg-emerald-500/10 text-emerald-400 flex items-center justify-center shrink-0">
-                <i class="fa-solid fa-info"></i>
-            </div>
-            <div class="text-xs space-y-1">
-                <h4 id="alert-title" class="font-bold">Sync Progress</h4>
-                <p id="alert-message" class="text-slate-300">Searching and Grounding complete.</p>
-            </div>
-            <button onclick="dismissAlert()" class="text-slate-500 hover:text-white text-xs shrink-0 self-center">
-                <i class="fa-solid fa-xmark"></i>
-            </button>
+  <!-- Firebase Integration CDN Script imports -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+    import { getFirestore, doc, setDoc, getDoc, collection, query, onSnapshot, getDocs, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+    // Provided User Firebase Config
+    const firebaseConfig = {
+      apiKey: "AIzaSyCYm4vzwvh_CZ8nvGat5KQPsyPQsjin8C4",
+      authDomain: "fifa-world-cup-predictor-lns.firebaseapp.com",
+      projectId: "fifa-world-cup-predictor-lns",
+      storageBucket: "fifa-world-cup-predictor-lns.firebasestorage.app",
+      messagingSenderId: "1027176481894",
+      appId: "1:1027176481894:web:0f945d97124423942019a7"
+    };
+
+    // Global variables & state trackers
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    const appId = "fifa-world-cup-predictor-lns";
+
+    let currentUser = null;
+    let localPredictions = {}; 
+    let leaderboardUsers = [];
+
+    // Real tournament fixtures matching UTC+6 (Dhaka Time) on Thursday, June 18, 2026, 2:55 PM
+    const matchesDatabase = [
+      {
+        id: "match_1",
+        homeTeam: "Mexico",
+        homeFlag: "mx",
+        awayTeam: "South Africa",
+        awayFlag: "za",
+        stage: "Group A",
+        status: "Completed",
+        date: "June 11, 2026",
+        actualScore: { home: 2, away: 0 }, 
+        result: "HOME_WIN"
+      },
+      {
+        id: "match_2",
+        homeTeam: "South Korea",
+        homeFlag: "kr",
+        awayTeam: "Czechia",
+        awayFlag: "cz",
+        stage: "Group A",
+        status: "Completed",
+        date: "June 11, 2026",
+        actualScore: { home: 2, away: 1 }, 
+        result: "HOME_WIN"
+      },
+      {
+        id: "match_3",
+        homeTeam: "Canada",
+        homeFlag: "ca",
+        awayTeam: "Bosnia and Herzegovina",
+        awayFlag: "ba",
+        stage: "Group B",
+        status: "Completed",
+        date: "June 12, 2026",
+        actualScore: { home: 1, away: 1 }, 
+        result: "DRAW"
+      },
+      {
+        id: "match_4",
+        homeTeam: "USA",
+        homeFlag: "us",
+        awayTeam: "Paraguay",
+        awayFlag: "py",
+        stage: "Group D",
+        status: "Completed",
+        date: "June 12, 2026",
+        actualScore: { home: 4, away: 1 }, 
+        result: "HOME_WIN"
+      },
+      {
+        id: "match_5",
+        homeTeam: "Brazil",
+        homeFlag: "br",
+        awayTeam: "Morocco",
+        awayFlag: "ma",
+        stage: "Group C",
+        status: "Completed",
+        date: "June 13, 2026",
+        actualScore: { home: 1, away: 1 },
+        result: "DRAW"
+      },
+      {
+        id: "match_6",
+        homeTeam: "Argentina",
+        homeFlag: "ar",
+        awayTeam: "Algeria",
+        awayFlag: "dz",
+        stage: "Group J",
+        status: "Completed",
+        date: "June 16, 2026",
+        actualScore: { home: 3, away: 0 }, 
+        result: "HOME_WIN"
+      },
+      {
+        id: "match_7",
+        homeTeam: "France",
+        homeFlag: "fr",
+        awayTeam: "Senegal",
+        awayFlag: "sn",
+        stage: "Group I",
+        status: "Completed",
+        date: "June 16, 2026",
+        actualScore: { home: 3, away: 1 },
+        result: "HOME_WIN"
+      },
+      {
+        id: "match_8",
+        homeTeam: "England",
+        homeFlag: "gb-eng",
+        awayTeam: "Croatia",
+        awayFlag: "hr",
+        stage: "Group L",
+        status: "Completed",
+        date: "June 17, 2026",
+        actualScore: { home: 4, away: 2 },
+        result: "HOME_WIN"
+      },
+      {
+        id: "match_9",
+        homeTeam: "Uzbekistan",
+        homeFlag: "uz",
+        awayTeam: "Colombia",
+        awayFlag: "co",
+        stage: "Group K",
+        status: "Completed",
+        date: "June 18, 2026 (08:00 AM Dhaka)",
+        actualScore: { home: 1, away: 3 }, 
+        result: "AWAY_WIN"
+      },
+      // Upcoming Matches over the next 2 Days (June 18 - June 20, 2026 UTC+6)
+      {
+        id: "match_10",
+        homeTeam: "Czechia",
+        homeFlag: "cz",
+        awayTeam: "South Africa",
+        awayFlag: "za",
+        stage: "Group A",
+        status: "Upcoming",
+        date: "June 18, 10:00 PM (Dhaka)",
+        actualScore: null,
+        result: null
+      },
+      {
+        id: "match_11",
+        homeTeam: "Switzerland",
+        homeFlag: "ch",
+        awayTeam: "Bosnia and Herzegovina",
+        awayFlag: "ba",
+        stage: "Group B",
+        status: "Upcoming",
+        date: "June 19, 01:00 AM (Dhaka)",
+        actualScore: null,
+        result: null
+      },
+      {
+        id: "match_12",
+        homeTeam: "Canada",
+        homeFlag: "ca",
+        awayTeam: "Qatar",
+        awayFlag: "qa",
+        stage: "Group B",
+        status: "Upcoming",
+        date: "June 19, 04:00 AM (Dhaka)",
+        actualScore: null,
+        result: null
+      },
+      {
+        id: "match_13",
+        homeTeam: "Mexico",
+        homeFlag: "mx",
+        awayTeam: "South Korea",
+        awayFlag: "kr",
+        stage: "Group A",
+        status: "Upcoming",
+        date: "June 19, 07:00 AM (Dhaka)",
+        actualScore: null,
+        result: null
+      },
+      {
+        id: "match_14",
+        homeTeam: "USA",
+        homeFlag: "us",
+        awayTeam: "Australia",
+        awayFlag: "au",
+        stage: "Group D",
+        status: "Upcoming",
+        date: "June 20, 01:00 AM (Dhaka)",
+        actualScore: null,
+        result: null
+      },
+      {
+        id: "match_15",
+        homeTeam: "Scotland",
+        homeFlag: "gb-sct",
+        awayTeam: "Morocco",
+        awayFlag: "ma",
+        stage: "Group C",
+        status: "Upcoming",
+        date: "June 20, 04:00 AM (Dhaka)",
+        actualScore: null,
+        result: null
+      },
+      {
+        id: "match_16",
+        homeTeam: "Brazil",
+        homeFlag: "br",
+        awayTeam: "Haiti",
+        awayFlag: "ht",
+        stage: "Group C",
+        status: "Upcoming",
+        date: "June 20, 06:30 AM (Dhaka)",
+        actualScore: null,
+        result: null
+      },
+      {
+        id: "match_17",
+        homeTeam: "Turkiye",
+        homeFlag: "tr",
+        awayTeam: "Paraguay",
+        awayFlag: "py",
+        stage: "Group D",
+        status: "Upcoming",
+        date: "June 20, 09:00 AM (Dhaka)",
+        actualScore: null,
+        result: null
+      }
+    ];
+
+    // Auth-state handling and initialization logic
+    function showNotification(message, type = "info") {
+      const container = document.getElementById("toast-container");
+      const toast = document.createElement("div");
+      
+      const colors = {
+        success: "bg-emerald-950 border-emerald-500 text-emerald-400",
+        error: "bg-rose-950 border-rose-500 text-rose-400",
+        info: "bg-slate-900 border-slate-700 text-slate-300"
+      };
+
+      const icons = {
+        success: "fa-circle-check",
+        error: "fa-triangle-exclamation",
+        info: "fa-circle-info"
+      };
+
+      toast.className = `p-3 xs:p-4 border rounded-xl shadow-2xl flex items-start space-x-3 transition-all duration-300 transform translate-x-12 opacity-0 pointer-events-auto ${colors[type]}`;
+      toast.innerHTML = `
+        <i class="fa-solid ${icons[type]} mt-0.5 text-base"></i>
+        <div class="flex-grow">
+          <p class="text-xs font-semibold">${message}</p>
         </div>
-    </div>
+        <button class="text-slate-400 hover:text-slate-200 transition-colors" onclick="this.parentElement.remove()">
+          <i class="fa-solid fa-xmark text-xs"></i>
+        </button>
+      `;
 
-    <footer class="bg-brand-deep border-t border-slate-900 py-6 mt-12 text-center text-slate-500 text-xs">
-        <div class="max-w-7xl mx-auto px-4 space-y-2">
-            <p class="font-bold text-slate-400">&copy; 2026 FIFA World Cup™ Grounded Matchday Console</p>
-            <p>Direct Google Search retrieval using Gemini-3-Flash API. Fully authentic scoreboard information.</p>
-        </div>
-    </footer>
+      container.appendChild(toast);
+      
+      setTimeout(() => {
+        toast.classList.remove("translate-x-12", "opacity-0");
+      }, 50);
 
-    <script>
-        // Official grounded matches based on actual FIFA World Cup 2026 results (including exact card stats)
-        const fallbackBaselineMatches = [
-            {
-                id: 1,
-                dateStr: "June 11, 2026",
-                kickoffUtc: "2026-06-12T01:00:00Z", // Opening Game
-                localTime: "13:00 local",
-                group: "Group A",
-                stadium: "Mexico City Stadium, Mexico City",
-                team1: { name: "Mexico", code: "MEX", flag: "🇲🇽", baseScore: 2 },
-                team2: { name: "South Africa", code: "RSA", flag: "🇿🇦", baseScore: 0 },
-                baseEvents: [
-                    { min: "9'", type: "goal", player: "Julián Quiñones (MEX)" },
-                    { min: "50'", type: "card-red", player: "Yaya Sithole (RSA)" },
-                    { min: "67'", type: "goal", player: "Raúl Jiménez (MEX)" },
-                    { min: "84'", type: "card-red", player: "Themba Zwane (RSA)" },
-                    { min: "90+2'", type: "card-red", player: "César Montes (MEX)" }
-                ],
-                stats: { possession: [58, 42], shots: [15, 6], fouls: [12, 16], corners: [7, 3] },
-                officialUrl: "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026",
-                youtubeId: "TOfHHrvNABg" // Real Youtube video ID for Mexico vs South Africa
-            },
-            {
-                id: 2,
-                dateStr: "June 11, 2026",
-                kickoffUtc: "2026-06-12T02:00:00Z",
-                localTime: "20:00 local",
-                group: "Group A",
-                stadium: "Guadalajara Stadium, Zapopan",
-                team1: { name: "South Korea", code: "KOR", flag: "🇰🇷", baseScore: 2 },
-                team2: { name: "Czechia", code: "CZE", flag: "🇨🇿", baseScore: 1 },
-                baseEvents: [
-                    { min: "12'", type: "goal", player: "Son Heung-min (KOR)" },
-                    { min: "35'", type: "goal", player: "Lee Kang-in (KOR)" },
-                    { min: "68'", type: "goal", player: "P. Schick (CZE)" }
-                ],
-                stats: { possession: [51, 49], shots: [11, 12], fouls: [12, 14], corners: [4, 7] },
-                officialUrl: "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026",
-                youtubeId: "vOrqm209H7a1B00K"
-            },
-            {
-                id: 3,
-                dateStr: "June 12, 2026",
-                kickoffUtc: "2026-06-12T19:00:00Z",
-                localTime: "15:00 local",
-                group: "Group B",
-                stadium: "Toronto Stadium, Toronto",
-                team1: { name: "Canada", code: "CAN", flag: "🇨🇦", baseScore: 1 },
-                team2: { name: "Bosnia & Herzegovina", code: "BIH", flag: "🇧🇦", baseScore: 1 },
-                baseEvents: [
-                    { min: "24'", type: "goal", player: "Jonathan David (CAN)" },
-                    { min: "55'", type: "goal", player: "E. Džeko (BIH)" }
-                ],
-                stats: { possession: [55, 45], shots: [13, 8], fouls: [9, 11], corners: [5, 3] },
-                officialUrl: "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026",
-                youtubeId: "ra0qU7jWrBE"
-            },
-            {
-                id: 4,
-                dateStr: "June 12, 2026",
-                kickoffUtc: "2026-06-13T01:00:00Z",
-                localTime: "18:00 local",
-                group: "Group D",
-                stadium: "Los Angeles Stadium, Los Angeles",
-                team1: { name: "United States", code: "USA", flag: "🇺🇸", baseScore: 4 },
-                team2: { name: "Paraguay", code: "PAR", flag: "🇵🇾", baseScore: 1 },
-                baseEvents: [
-                    { min: "7'", type: "goal", player: "Damian Bobadilla (OG) (USA)" },
-                    { min: "31'", type: "goal", player: "Folarin Balogun (USA)" },
-                    { min: "45+5'", type: "goal", player: "Folarin Balogun (USA)" },
-                    { min: "73'", type: "goal", player: "Mauricio (PAR)" },
-                    { min: "90+8'", type: "goal", player: "Giovanni Reyna (USA)" }
-                ],
-                stats: { possession: [62, 38], shots: [18, 7], fouls: [11, 16], corners: [8, 3] },
-                officialUrl: "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026",
-                youtubeId: "SLWUjuadJsA"
-            },
-            {
-                id: 5,
-                dateStr: "June 13, 2026",
-                kickoffUtc: "2026-06-13T19:00:00Z",
-                localTime: "12:00 local",
-                group: "Group B",
-                stadium: "San Francisco Bay Area Stadium",
-                team1: { name: "Qatar", code: "QAT", flag: "🇶🇦", baseScore: 1 },
-                team2: { name: "Switzerland", code: "SUI", flag: "🇨🇭", baseScore: 1 },
-                baseEvents: [
-                    { min: "15'", type: "goal", player: "Almoez Ali (QAT)" },
-                    { min: "77'", type: "goal", player: "B. Embolo (SUI)" }
-                ],
-                stats: { possession: [40, 60], shots: [6, 15], fouls: [14, 9], corners: [2, 8] },
-                officialUrl: "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026",
-                youtubeId: "hJGAtqlPlQjCHF4d"
-            },
-            {
-                id: 6,
-                dateStr: "June 13, 2026",
-                kickoffUtc: "2026-06-13T22:00:00Z",
-                localTime: "18:00 local",
-                group: "Group C",
-                stadium: "New York New Jersey Stadium",
-                team1: { name: "Brazil", code: "BRA", flag: "🇧🇷", baseScore: 1 },
-                team2: { name: "Morocco", code: "MAR", flag: "🇲🇦", baseScore: 1 },
-                baseEvents: [
-                    { min: "45'", type: "goal", player: "Vinícius Jr. (BRA)" },
-                    { min: "62'", type: "goal", player: "Y. En-Nesyri (MAR)" }
-                ],
-                stats: { possession: [54, 46], shots: [12, 10], fouls: [13, 15], corners: [5, 4] },
-                officialUrl: "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026",
-                youtubeId: "i4cNJd6obuub72wF"
-            },
-            {
-                id: 7,
-                dateStr: "June 13, 2026",
-                kickoffUtc: "2026-06-14T01:00:00Z",
-                localTime: "21:00 local",
-                group: "Group C",
-                stadium: "Boston Stadium, Boston",
-                team1: { name: "Haiti", code: "HAI", flag: "🇭🇹", baseScore: 0 },
-                team2: { name: "Scotland", code: "SCO", flag: "🏴󠁧󠁢󠁳󠁣󠁴󠁿", baseScore: 1 },
-                baseEvents: [
-                    { min: "38'", type: "goal", player: "S. McTominay (SCO)" }
-                ],
-                stats: { possession: [36, 64], shots: [5, 14], fouls: [15, 8], corners: [1, 9] },
-                officialUrl: "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026",
-                youtubeId: "vOrqm209H7a1B00K"
-            },
-            {
-                id: 8,
-                dateStr: "June 13, 2026",
-                kickoffUtc: "2026-06-14T04:00:00Z",
-                localTime: "18:00 local",
-                group: "Group D",
-                stadium: "BC Place Vancouver, Vancouver",
-                team1: { name: "Australia", code: "AUS", flag: "🇦🇺", baseScore: 2 },
-                team2: { name: "Türkiye", code: "TUR", flag: "🇹🇷", baseScore: 0 },
-                baseEvents: [
-                    { min: "21'", type: "goal", player: "Connor Metcalfe (AUS)" },
-                    { min: "79'", type: "goal", player: "Nestory Irankunda (AUS)" }
-                ],
-                stats: { possession: [44, 56], shots: [9, 13], fouls: [11, 10], corners: [3, 6] },
-                officialUrl: "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026",
-                youtubeId: "WE-dG-H-EDEYNXPc"
-            },
-            {
-                id: 9,
-                dateStr: "June 14, 2026",
-                kickoffUtc: "2026-06-14T17:00:00Z",
-                localTime: "12:00 local",
-                group: "Group E",
-                stadium: "Houston Stadium, Houston",
-                team1: { name: "Germany", code: "GER", flag: "🇩🇪", baseScore: 7 },
-                team2: { name: "Curaçao", code: "CUW", flag: "🇨🇼", baseScore: 1 },
-                baseEvents: [
-                    { min: "6'", type: "goal", player: "Felix Nmecha (GER)" },
-                    { min: "21'", type: "goal", player: "Livano Comenencia (CUW)" },
-                    { min: "38'", type: "goal", player: "Nico Schlotterbeck (GER)" },
-                    { min: "45+5'", type: "goal", player: "Kai Havertz (GER)" },
-                    { min: "47'", type: "goal", player: "Jamal Musiala (GER)" },
-                    { min: "68'", type: "goal", player: "Nathaniel Brown (GER)" },
-                    { min: "78'", type: "goal", player: "Deniz Undav (GER)" },
-                    { min: "88'", type: "goal", player: "Kai Havertz (GER)" }
-                ],
-                stats: { possession: [72, 28], shots: [26, 4], fouls: [7, 12], corners: [12, 1] },
-                officialUrl: "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026",
-                youtubeId: "rpHzDZ-DK1g"
-            },
-            {
-                id: 10,
-                dateStr: "June 14, 2026",
-                kickoffUtc: "2026-06-14T20:00:00Z",
-                localTime: "15:00 local",
-                group: "Group F",
-                stadium: "Dallas Stadium, Dallas",
-                team1: { name: "Netherlands", code: "NED", flag: "🇳🇱", baseScore: 2 },
-                team2: { name: "Japan", code: "JPN", flag: "🇯🇵", baseScore: 2 },
-                baseEvents: [
-                    { min: "17'", type: "goal", player: "Crysencio Summerville (NED)" },
-                    { min: "39'", type: "goal", player: "Keito Nakamura (JPN)" },
-                    { min: "58'", type: "goal", player: "Virgil van Dijk (NED)" },
-                    { min: "82'", type: "goal", player: "Daichi Kamada (JPN)" }
-                ],
-                stats: { possession: [52, 48], shots: [11, 14], fouls: [10, 11], corners: [4, 6] },
-                officialUrl: "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026",
-                youtubeId: "ra0qU7jWrBE"
-            },
-            {
-                id: 11,
-                dateStr: "June 14, 2026",
-                kickoffUtc: "2026-06-14T23:00:00Z",
-                localTime: "19:00 local",
-                group: "Group E",
-                stadium: "Philadelphia Stadium, Philadelphia",
-                team1: { name: "Ivory Coast", code: "CIV", flag: "🇨🇮", baseScore: 1 },
-                team2: { name: "Ecuador", code: "ECU", flag: "🇪🇨", baseScore: 0 },
-                baseEvents: [
-                    { min: "44'", type: "goal", player: "S. Haller (CIV)" }
-                ],
-                stats: { possession: [47, 53], shots: [8, 11], fouls: [14, 13], corners: [3, 5] },
-                officialUrl: "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026",
-                youtubeId: "vOrqm209H7a1B00K"
-            },
-            {
-                id: 12,
-                dateStr: "June 15, 2026",
-                kickoffUtc: "2026-06-15T02:00:00Z",
-                localTime: "20:00 local",
-                group: "Group F",
-                stadium: "Monterrey Stadium, Monterrey",
-                team1: { name: "Sweden", code: "SWE", flag: "🇸🇪", baseScore: 5 },
-                team2: { name: "Tunisia", code: "TUN", flag: "🇹🇳", baseScore: 1 },
-                baseEvents: [
-                    { min: "6'", type: "goal", player: "Y. Ayari (SWE)" },
-                    { min: "29'", type: "goal", player: "A. Isak (SWE)" },
-                    { min: "42'", type: "goal", player: "O. Rekik (TUN)" },
-                    { min: "58'", type: "goal", player: "V. Gyökeres (SWE)" },
-                    { min: "83'", type: "goal", player: "M. Svanberg (SWE)" },
-                    { min: "90+5'", type: "goal", player: "Y. Ayari (SWE)" }
-                ],
-                stats: { possession: [60, 40], shots: [17, 8], fouls: [9, 14], corners: [7, 3] },
-                officialUrl: "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026",
-                youtubeId: "ra0qU7jWrBE"
-            },
-            {
-                id: 13,
-                dateStr: "June 15, 2026",
-                kickoffUtc: "2026-06-15T16:00:00Z", // 12:00 Atlanta
-                localTime: "12:00 PM EST",
-                group: "Group H",
-                stadium: "Atlanta Stadium, Atlanta",
-                team1: { name: "Spain", code: "ESP", flag: "🇪🇸", baseScore: 1 },
-                team2: { name: "Cabo Verde", code: "CPV", flag: "🇨🇻", baseScore: 0 },
-                baseEvents: [
-                    { min: "24'", type: "goal", player: "Lamine Yamal (ESP)" }
-                ],
-                stats: { possession: [68, 32], shots: [12, 3], fouls: [6, 10], corners: [5, 1] },
-                officialUrl: "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026",
-                youtubeId: ""
-            },
-            {
-                id: 14,
-                dateStr: "June 15, 2026",
-                kickoffUtc: "2026-06-15T19:00:00Z", // 12:00 Seattle
-                localTime: "3:00 PM EST",
-                group: "Group G",
-                stadium: "Seattle Stadium, Seattle",
-                team1: { name: "Belgium", code: "BEL", flag: "🇧🇪", baseScore: 0 },
-                team2: { name: "Egypt", code: "EGY", flag: "🇪🇬", baseScore: 0 },
-                baseEvents: [],
-                stats: { possession: [54, 46], shots: [3, 2], fouls: [2, 3], corners: [1, 1] },
-                officialUrl: "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026",
-                youtubeId: ""
-            },
-            {
-                id: 15,
-                dateStr: "June 15, 2026",
-                kickoffUtc: "2026-06-15T22:00:00Z", // 18:00 Miami
-                localTime: "6:00 PM EST",
-                group: "Group H",
-                stadium: "Miami Stadium, Miami",
-                team1: { name: "Saudi Arabia", code: "KSA", flag: "🇸🇦", baseScore: 0 },
-                team2: { name: "Uruguay", code: "URU", flag: "🇺🇾", baseScore: 0 },
-                baseEvents: [],
-                stats: { possession: [50, 50], shots: [0, 0], fouls: [0, 0], corners: [0, 0] },
-                officialUrl: "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026",
-                youtubeId: ""
-            },
-            {
-                id: 16,
-                dateStr: "June 16, 2026",
-                kickoffUtc: "2026-06-16T01:00:00Z", // 18:00 LA
-                localTime: "9:00 PM EST",
-                group: "Group G",
-                stadium: "Los Angeles Stadium, Los Angeles",
-                team1: { name: "Iran", code: "IRN", flag: "🇮🇷", baseScore: 0 },
-                team2: { name: "New Zealand", code: "NZL", flag: "🇳🇿", baseScore: 0 },
-                baseEvents: [],
-                stats: { possession: [50, 50], shots: [0, 0], fouls: [0, 0], corners: [0, 0] },
-                officialUrl: "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026",
-                youtubeId: ""
-            }
-        ];
+      setTimeout(() => {
+        toast.classList.add("opacity-0", "translate-x-12");
+        setTimeout(() => toast.remove(), 300);
+      }, 5000);
+    }
 
-        let activeMatchesState = [];
-        let simulationMode = "real";
-        let currentSimulatedTime = new Date("2026-06-15T17:15:00Z");
-        let activeFilter = 'all';
+    const profileBtn = document.getElementById("profile-btn");
+    const profileDropdown = document.getElementById("profile-dropdown");
+    
+    profileBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      profileDropdown.classList.toggle("hidden");
+    });
 
-        function initMatchesState() {
-            const savedState = localStorage.getItem("fifa_grounded_state");
-            if (savedState) {
-                try {
-                    activeMatchesState = JSON.parse(savedState);
-                    addTerminalLog("Retrieved latest state with updated match fixtures from storage.");
-                } catch(e) {
-                    activeMatchesState = JSON.parse(JSON.stringify(fallbackBaselineMatches));
-                }
+    document.addEventListener("click", () => {
+      profileDropdown.classList.add("hidden");
+    });
+
+    onAuthStateChanged(auth, async (user) => {
+      const authView = document.getElementById("auth-view");
+      const dashboardView = document.getElementById("dashboard-view");
+      const profileContainer = document.getElementById("profile-container");
+      
+      if (user) {
+        currentUser = user;
+        
+        document.getElementById("nav-user-email").textContent = user.email || "Anonymous";
+        document.getElementById("dropdown-user-email").textContent = user.email || "Anonymous User";
+        document.getElementById("sync-pill").classList.remove("hidden");
+
+        authView.classList.add("hidden");
+        dashboardView.classList.remove("hidden");
+        profileContainer.classList.remove("hidden");
+
+        await initializeUserProfile(user);
+        listenToUserPredictions(user);
+        listenToGlobalLeaderboard();
+        calculateNextScheduledSyncTime();
+        
+        showNotification(`Welcome back, ${user.email || 'Champion'}! Portal ready.`, "success");
+      } else {
+        currentUser = null;
+        
+        authView.classList.remove("hidden");
+        dashboardView.classList.add("hidden");
+        profileContainer.classList.add("hidden");
+        document.getElementById("sync-pill").classList.add("hidden");
+        
+        localPredictions = {};
+        leaderboardUsers = [];
+      }
+    });
+
+    // Runs automatically behind the scenes to estimate when the next automated score calculations evaluate
+    function calculateNextScheduledSyncTime() {
+      const now = new Date();
+      
+      // Target schedule times in Dhaka time (Dhaka is UTC+6)
+      // Convert current local time to UTC first to accurately determine Dhaka hours
+      const utcTime = now.getTime() + (now.getTimezoneOffset() * 60000);
+      const dhakaTime = new Date(utcTime + (3600000 * 6));
+      
+      const currentDhakaYear = dhakaTime.getFullYear();
+      const currentDhakaMonth = dhakaTime.getMonth();
+      const currentDhakaDate = dhakaTime.getDate();
+      
+      // Candidate runs (01:30 AM, 05:30 AM, 09:30 AM)
+      const runs = [
+        new Date(currentDhakaYear, currentDhakaMonth, currentDhakaDate, 1, 30, 0),
+        new Date(currentDhakaYear, currentDhakaMonth, currentDhakaDate, 5, 30, 0),
+        new Date(currentDhakaYear, currentDhakaMonth, currentDhakaDate, 9, 30, 0),
+        // Tomorrow's first run
+        new Date(currentDhakaYear, currentDhakaMonth, currentDhakaDate + 1, 1, 30, 0)
+      ];
+      
+      let nextRun = runs[3]; // Fallback to tomorrow 01:30 AM
+      for (const run of runs) {
+        if (run > dhakaTime) {
+          nextRun = run;
+          break;
+        }
+      }
+      
+      // Calculate countdown duration in hours/minutes
+      const diffMs = nextRun - dhakaTime;
+      const diffHours = Math.floor(diffMs / 3600000);
+      const diffMins = Math.floor((diffMs % 3600000) / 60000);
+      
+      const options = { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true };
+      const formattedRunDate = nextRun.toLocaleString('en-US', options);
+      
+      const statusStr = `${formattedRunDate} (in ${diffHours}h ${diffMins}m)`;
+      document.getElementById("next-auto-run").textContent = statusStr;
+    }
+
+    // Refresh scheduled evaluation calculations every 1 minute
+    setInterval(calculateNextScheduledSyncTime, 60000);
+
+    async function initializeUserProfile(user) {
+      const userRef = doc(db, 'artifacts', appId, 'public', 'data', 'users', user.uid);
+      try {
+        const userSnap = await getDoc(userRef);
+        if (!userSnap.exists()) {
+          const freshData = {
+            uid: user.uid,
+            email: user.email || "anonymous@fifa.com",
+            points: 0,
+            predictionCount: 0,
+            lastSynced: Date.now()
+          };
+          await setDoc(userRef, freshData);
+          document.getElementById("user-hud-points").textContent = "0";
+          document.getElementById("dropdown-user-points").textContent = "0 pts";
+        } else {
+          const userData = userSnap.data();
+          document.getElementById("user-hud-points").textContent = userData.points || 0;
+          document.getElementById("dropdown-user-points").textContent = `${userData.points || 0} pts`;
+        }
+      } catch (err) {
+        console.error("Error setting up user profile: ", err);
+      }
+    }
+
+    function listenToUserPredictions(user) {
+      const q = doc(db, 'artifacts', appId, 'users', user.uid, 'predictions', 'all_predictions');
+      
+      onSnapshot(q, (snapshot) => {
+        if (snapshot.exists()) {
+          localPredictions = snapshot.data();
+        } else {
+          localPredictions = {};
+        }
+        updatePredictionsCounter();
+        renderMatches();
+      }, (error) => {
+        console.error("Firestore predictions list error: ", error);
+      });
+    }
+
+    function listenToGlobalLeaderboard() {
+      const usersCol = collection(db, 'artifacts', appId, 'public', 'data', 'users');
+      
+      onSnapshot(usersCol, (snapshot) => {
+        leaderboardUsers = [];
+        snapshot.forEach((doc) => {
+          leaderboardUsers.push(doc.data());
+        });
+        leaderboardUsers.sort((a, b) => (b.points || 0) - (a.points || 0));
+        renderLeaderboard();
+      }, (error) => {
+        console.error("Leaderboard database listing error: ", error);
+      });
+    }
+
+    function updatePredictionsCounter() {
+      const count = Object.keys(localPredictions).length;
+      document.getElementById("saved-predictions-counter").textContent = count;
+    }
+
+    window.switchTab = function(tabName) {
+      const tabPredictions = document.getElementById("tab-btn-predictions");
+      const tabLeaderboard = document.getElementById("tab-btn-leaderboard");
+      const contentPredictions = document.getElementById("tab-content-predictions");
+      const contentLeaderboard = document.getElementById("tab-content-leaderboard");
+
+      if (tabName === 'predictions') {
+        tabPredictions.className = "flex-1 sm:flex-initial border-b-2 border-emerald-500 text-emerald-400 pb-3 px-1 text-xs xs:text-sm md:text-base font-bold font-sporty tracking-wide transition-all flex items-center justify-center sm:justify-start space-x-2";
+        tabLeaderboard.className = "flex-1 sm:flex-initial border-b-2 border-transparent text-slate-400 hover:text-slate-200 pb-3 px-1 text-xs xs:text-sm md:text-base font-bold font-sporty tracking-wide transition-all flex items-center justify-center sm:justify-start space-x-2";
+        
+        contentPredictions.classList.remove("hidden");
+        contentLeaderboard.classList.add("hidden");
+      } else {
+        tabLeaderboard.className = "flex-1 sm:flex-initial border-b-2 border-emerald-500 text-emerald-400 pb-3 px-1 text-xs xs:text-sm md:text-base font-bold font-sporty tracking-wide transition-all flex items-center justify-center sm:justify-start space-x-2";
+        tabPredictions.className = "flex-1 sm:flex-initial border-b-2 border-transparent text-slate-400 hover:text-slate-200 pb-3 px-1 text-xs xs:text-sm md:text-base font-bold font-sporty tracking-wide transition-all flex items-center justify-center sm:justify-start space-x-2";
+        
+        contentLeaderboard.classList.remove("hidden");
+        contentPredictions.classList.add("hidden");
+        renderLeaderboard();
+      }
+    };
+
+    window.renderMatches = function() {
+      const grid = document.getElementById("matches-grid");
+      const filter = document.getElementById("match-group-filter").value;
+      
+      grid.innerHTML = "";
+
+      let filteredMatches = matchesDatabase;
+      if (filter !== "ALL") {
+        filteredMatches = matchesDatabase.filter(m => m.status === filter);
+      }
+
+      filteredMatches.sort((a, b) => {
+        const order = { "Upcoming": 1, "Live": 2, "Completed": 3 };
+        return order[a.status] - order[b.status];
+      });
+
+      if (filteredMatches.length === 0) {
+        grid.innerHTML = `
+          <div class="col-span-full bg-slate-900/40 border border-dashed border-slate-800 rounded-2xl py-12 px-4 text-center">
+            <i class="fa-solid fa-circle-question text-3xl text-slate-600 mb-2"></i>
+            <p class="text-sm text-slate-400">No matching fixtures found for this group filter.</p>
+          </div>
+        `;
+        return;
+      }
+
+      filteredMatches.forEach((match) => {
+        const userPrediction = localPredictions[match.id] || null;
+        const isLocked = match.status === "Live" || match.status === "Completed";
+        
+        let badgeStyle = "";
+        let statusIcon = "";
+        
+        if (match.status === "Upcoming") {
+          badgeStyle = "bg-blue-950/80 text-blue-400 border border-blue-900/50";
+          statusIcon = "fa-clock animate-pulse";
+        } else if (match.status === "Live") {
+          badgeStyle = "bg-emerald-950/90 text-emerald-400 border border-emerald-800 animate-pulse";
+          statusIcon = "fa-gamepad";
+        } else {
+          badgeStyle = "bg-slate-900/90 text-slate-400 border border-slate-800";
+          statusIcon = "fa-circle-check";
+        }
+
+        const activeHomeStyle = userPrediction === "HOME_WIN" 
+          ? "bg-emerald-500 text-slate-950 font-black border-transparent shadow-lg glow-emerald" 
+          : "bg-slate-950 text-slate-300 border-slate-800 hover:border-slate-700";
+        
+        const activeDrawStyle = userPrediction === "DRAW" 
+          ? "bg-emerald-500 text-slate-950 font-black border-transparent shadow-lg glow-emerald" 
+          : "bg-slate-950 text-slate-300 border-slate-800 hover:border-slate-700";
+          
+        const activeAwayStyle = userPrediction === "AWAY_WIN" 
+          ? "bg-emerald-500 text-slate-950 font-black border-transparent shadow-lg glow-emerald" 
+          : "bg-slate-950 text-slate-300 border-slate-800 hover:border-slate-700";
+
+        const card = document.createElement("div");
+        card.className = `bg-slate-900 rounded-2xl border ${isLocked ? 'border-slate-800/80 bg-slate-950/40' : 'border-slate-800 hover:border-slate-700'} p-3.5 xs:p-5 relative overflow-hidden transition-all flex flex-col justify-between shadow-lg`;
+        
+        card.innerHTML = `
+          <!-- Header details -->
+          <div class="flex justify-between items-center mb-4">
+            <span class="text-[11px] font-bold font-sporty tracking-wider text-slate-400 uppercase bg-slate-950 px-2.5 py-1 rounded-full border border-slate-800/80">
+              ${match.stage}
+            </span>
+            <div class="flex items-center space-x-1.5 ${badgeStyle} text-[10px] font-bold font-sporty tracking-widest px-2.5 py-1 rounded-full uppercase">
+              <i class="fa-solid ${statusIcon}"></i>
+              <span>${match.status}</span>
+            </div>
+          </div>
+
+          <!-- Teams and Flags matchup block (Fully mobile adaptive sizes) -->
+          <div class="grid grid-cols-7 gap-1 items-center my-2 text-center">
+            
+            <!-- Home Team -->
+            <div class="col-span-3 flex flex-col items-center">
+              <div class="w-10 h-10 xs:w-12 xs:h-12 md:w-14 md:h-14 rounded-full bg-slate-950 border-2 border-slate-800 p-1 flex items-center justify-center overflow-hidden mb-2 relative">
+                <img src="https://flagcdn.com/w160/${match.homeFlag}.png" class="w-full h-full object-cover rounded-full" alt="${match.homeTeam}" onerror="this.src='https://flagcdn.com/w160/un.png'">
+              </div>
+              <span class="text-[11px] xs:text-xs md:text-sm font-bold tracking-tight line-clamp-1 text-slate-200">${match.homeTeam}</span>
+            </div>
+
+            <!-- Score / Versus Segment -->
+            <div class="col-span-1 flex flex-col justify-center items-center">
+              ${match.actualScore 
+                ? `<div class="text-lg xs:text-xl md:text-2xl font-black font-sporty text-emerald-400 bg-slate-950/80 px-2 py-0.5 rounded-lg border border-slate-800">${match.actualScore.home}:${match.actualScore.away}</div>`
+                : `<div class="text-xs font-bold font-sporty text-slate-500 uppercase tracking-widest">VS</div>`
+              }
+              <span class="text-[8px] xs:text-[9px] text-slate-500 mt-1 uppercase font-sporty text-center break-words leading-tight">${match.date}</span>
+            </div>
+
+            <!-- Away Team -->
+            <div class="col-span-3 flex flex-col items-center">
+              <div class="w-10 h-10 xs:w-12 xs:h-12 md:w-14 md:h-14 rounded-full bg-slate-950 border-2 border-slate-800 p-1 flex items-center justify-center overflow-hidden mb-2 relative">
+                <img src="https://flagcdn.com/w160/${match.awayFlag}.png" class="w-full h-full object-cover rounded-full" alt="${match.awayTeam}" onerror="this.src='https://flagcdn.com/w160/un.png'">
+              </div>
+              <span class="text-[11px] xs:text-xs md:text-sm font-bold tracking-tight line-clamp-1 text-slate-200">${match.awayTeam}</span>
+            </div>
+
+          </div>
+
+          <!-- Prediction Interface -->
+          <div class="mt-4 pt-4 border-t border-slate-800/60">
+            <div class="flex justify-between items-center mb-2">
+              <span class="text-[10px] xs:text-[11px] font-bold tracking-widest text-slate-400 uppercase font-sporty flex items-center space-x-1">
+                <i class="fa-solid fa-wand-magic-sparkles text-emerald-500"></i>
+                <span>Your Prediction:</span>
+              </span>
+              
+              ${isLocked 
+                ? `<span class="text-[10px] text-amber-500 bg-amber-950/20 border border-amber-900/40 px-2 py-0.5 rounded font-sporty"><i class="fa-solid fa-lock mr-1"></i>Locked</span>`
+                : `<span class="text-[10px] text-emerald-400 bg-emerald-950/20 border border-emerald-900/40 px-2 py-0.5 rounded font-sporty"><i class="fa-solid fa-pen-to-square mr-1"></i>Open</span>`
+              }
+            </div>
+
+            <!-- Highly resilient buttons layout designed to fit nicely on small screen dimensions -->
+            <div class="grid grid-cols-3 gap-1.5 xs:gap-2">
+              <button 
+                onclick="submitPrediction('${match.id}', 'HOME_WIN', ${isLocked})" 
+                ${isLocked ? 'disabled' : ''} 
+                class="flex flex-col items-center justify-center py-2.5 px-1 rounded-xl border text-[10px] xs:text-xs transition-all ${activeHomeStyle} ${isLocked ? 'opacity-80' : ''}">
+                <span class="font-bold truncate max-w-full px-1">Win ${match.homeTeam}</span>
+                <span class="text-[9px] opacity-75">Team 1</span>
+              </button>
+
+              <button 
+                onclick="submitPrediction('${match.id}', 'DRAW', ${isLocked})" 
+                ${isLocked ? 'disabled' : ''} 
+                class="flex flex-col items-center justify-center py-2.5 px-1 rounded-xl border text-[10px] xs:text-xs transition-all ${activeDrawStyle} ${isLocked ? 'opacity-80' : ''}">
+                <span class="font-bold">Tie</span>
+                <span class="text-[9px] opacity-75">Draw</span>
+              </button>
+
+              <button 
+                onclick="submitPrediction('${match.id}', 'AWAY_WIN', ${isLocked})" 
+                ${isLocked ? 'disabled' : ''} 
+                class="flex flex-col items-center justify-center py-2.5 px-1 rounded-xl border text-[10px] xs:text-xs transition-all ${activeAwayStyle} ${isLocked ? 'opacity-80' : ''}">
+                <span class="font-bold truncate max-w-full px-1">Win ${match.awayTeam}</span>
+                <span class="text-[9px] opacity-75">Team 2</span>
+              </button>
+            </div>
+
+            <!-- Scoring Result Feedback -->
+            ${match.status === "Completed" ? `
+              <div class="mt-3 p-2 rounded-xl text-xs flex items-center justify-between font-sporty ${userPrediction === match.result ? 'bg-emerald-950/40 border border-emerald-800 text-emerald-400' : ((userPrediction === 'HOME_WIN' || userPrediction === 'AWAY_WIN') && match.result === 'DRAW') ? 'bg-amber-950/40 border border-amber-800/80 text-amber-300' : 'bg-slate-950/80 border border-slate-800 text-slate-400'}">
+                <span class="flex items-center space-x-1">
+                  <i class="fa-solid ${userPrediction === match.result ? 'fa-square-check text-emerald-400' : ((userPrediction === 'HOME_WIN' || userPrediction === 'AWAY_WIN') && match.result === 'DRAW') ? 'fa-circle-half-stroke text-amber-300' : 'fa-rectangle-xmark text-slate-500'}"></i>
+                  <span class="text-[10px] xs:text-xs">Result: ${userPrediction === match.result ? 'Correct Outcome!' : ((userPrediction === 'HOME_WIN' || userPrediction === 'AWAY_WIN') && match.result === 'DRAW') ? 'Win predicted, but Ended in Tie' : 'Incorrect'}</span>
+                </span>
+                <span class="font-bold text-[10px] xs:text-xs">${userPrediction === match.result ? '+3 Pts' : ((userPrediction === 'HOME_WIN' || userPrediction === 'AWAY_WIN') && match.result === 'DRAW') ? '+1 Pt' : '0 Pts'}</span>
+              </div>
+            ` : ''}
+
+            ${match.status === "Live" ? `
+              <div class="mt-3 p-2 bg-amber-950/20 border border-amber-900/30 rounded-xl text-[11px] text-amber-400 text-center font-sporty animate-pulse">
+                <i class="fa-solid fa-triangle-exclamation mr-1"></i> Match is in play. Live status scoring soon.
+              </div>
+            ` : ''}
+
+          </div>
+        `;
+        
+        grid.appendChild(card);
+      });
+    };
+
+    const authForm = document.getElementById("auth-form");
+    const authToggleBtn = document.getElementById("auth-toggle-btn");
+    const authTitle = document.getElementById("auth-title");
+    const authToggleDesc = document.getElementById("auth-toggle-desc");
+    const authSubmitBtn = document.getElementById("auth-submit-btn");
+    const authErrorBox = document.getElementById("auth-error-box");
+    const authErrorMsg = document.getElementById("auth-error-msg");
+
+    let authMode = "login"; 
+
+    authToggleBtn.addEventListener("click", () => {
+      authErrorBox.classList.add("hidden");
+      if (authMode === "login") {
+        authMode = "signup";
+        authTitle.textContent = "Register Stadium ID";
+        authToggleDesc.textContent = "Already have a ticket to the portal?";
+        authToggleBtn.textContent = "Log In Here";
+        authSubmitBtn.textContent = "CREATE NEW ACCOUNT";
+      } else {
+        authMode = "login";
+        authTitle.textContent = "Welcome to Stadium Portal";
+        authToggleDesc.textContent = "Don't have an active predictor profile?";
+        authToggleBtn.textContent = "Create Profile";
+        authSubmitBtn.textContent = "LOG IN TO PORTAL";
+      }
+    });
+
+    authForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const email = document.getElementById("auth-email").value.trim();
+      const password = document.getElementById("auth-password").value;
+      
+      authErrorBox.classList.add("hidden");
+      authSubmitBtn.disabled = true;
+      authSubmitBtn.textContent = "PROCESSING PASS...";
+
+      try {
+        if (authMode === "login") {
+          await signInWithEmailAndPassword(auth, email, password);
+        } else {
+          await createUserWithEmailAndPassword(auth, email, password);
+        }
+      } catch (err) {
+        console.error(err);
+        authErrorBox.classList.remove("hidden");
+        authErrorMsg.textContent = err.message || "Failed to process authentication. Review details.";
+        showNotification("Authentication issue detected. Please check credentials.", "error");
+      } finally {
+        authSubmitBtn.disabled = false;
+        authSubmitBtn.textContent = authMode === "login" ? "LOG IN TO PORTAL" : "CREATE NEW ACCOUNT";
+      }
+    });
+
+    document.getElementById("logout-btn").addEventListener("click", async () => {
+      try {
+        await signOut(auth);
+        showNotification("Successfully signed out of 2026 World Cup Portal.", "info");
+      } catch (err) {
+        showNotification("Failed to sign out cleanly.", "error");
+      }
+    });
+
+    window.submitPrediction = async function(matchId, choice, isLocked) {
+      if (!currentUser) {
+        showNotification("Please log in to submit match predictions.", "error");
+        return;
+      }
+      
+      if (isLocked) {
+        showNotification("This match is Live/Completed. Prediction modifications are locked.", "error");
+        return;
+      }
+
+      localPredictions[matchId] = choice;
+      updatePredictionsCounter();
+      renderMatches();
+
+      try {
+        const docRef = doc(db, 'artifacts', appId, 'users', currentUser.uid, 'predictions', 'all_predictions');
+        await setDoc(docRef, localPredictions, { merge: true });
+        
+        showNotification("Prediction saved to live database!", "success");
+      } catch (error) {
+        console.error("Firestore save error: ", error);
+        showNotification("Unable to write match prediction to database.", "error");
+      }
+    };
+
+    // STRICT SCORE CALCULATION - ONLY process completed matches (with scores)
+    window.syncWithWorldCupScores = async function() {
+      if (!currentUser) {
+        showNotification("Sync process requires an active login session.", "error");
+        return;
+      }
+
+      showNotification("Syncing prediction profiles with Live FIFA 2026 scores...", "info");
+
+      let scoreCalculated = 0;
+      let totalCompletedPredictions = 0;
+
+      matchesDatabase.forEach((match) => {
+        // Only evaluate predictions for matches strictly marked Completed
+        if (match.status === "Completed") {
+          const prediction = localPredictions[match.id];
+          if (prediction) {
+            totalCompletedPredictions++;
+            
+            // STRICT IMPLEMENTATION OF THE POINTS MATRIX (Verbatim to image_ffbd75.png):
+            if (prediction === match.result) {
+              // Correct prediction outcome -> 3 Points
+              scoreCalculated += 3;
+            } else if ((prediction === "HOME_WIN" || prediction === "AWAY_WIN") && match.result === "DRAW") {
+              // Predicted Win (Team 1 or Team 2), but result was a Draw -> 1 Point
+              scoreCalculated += 1;
             } else {
-                activeMatchesState = JSON.parse(JSON.stringify(fallbackBaselineMatches));
+              // Mismatch -> 0 Points
+              scoreCalculated += 0;
             }
+          }
         }
-
-        function saveMatchesToLocalStorage() {
-            localStorage.setItem("fifa_grounded_state", JSON.stringify(activeMatchesState));
-        }
-
-        function hideTerminal() {
-            document.getElementById('log-terminal-panel').classList.add('hidden');
-        }
-
-        function addTerminalLog(message) {
-            const logsContainer = document.getElementById('log-outputs');
-            const panel = document.getElementById('log-terminal-panel');
-            panel.classList.remove('hidden');
-
-            const timestamp = new Date().toLocaleTimeString();
-            const logLine = document.createElement('p');
-            logLine.innerHTML = `<span class="text-emerald-500 font-bold">[${timestamp}]</span> ${message}`;
-            logsContainer.appendChild(logLine);
-            logsContainer.scrollTop = logsContainer.scrollHeight;
-        }
-
-        function showNotification(title, message, isSuccess = true) {
-            const banner = document.getElementById('global-alert');
-            const icon = document.getElementById('alert-icon');
-            document.getElementById('alert-title').innerText = title;
-            document.getElementById('alert-message').innerText = message;
-
-            if (isSuccess) {
-                icon.className = "w-8 h-8 rounded-full bg-emerald-500/10 text-emerald-400 flex items-center justify-center shrink-0";
-                icon.innerHTML = '<i class="fa-solid fa-circle-check"></i>';
-            } else {
-                icon.className = "w-8 h-8 rounded-full bg-rose-500/10 text-rose-400 flex items-center justify-center shrink-0";
-                icon.innerHTML = '<i class="fa-solid fa-circle-exclamation"></i>';
-            }
-
-            banner.classList.remove('hidden');
-            setTimeout(() => { dismissAlert(); }, 6000);
-        }
-
-        function dismissAlert() {
-            document.getElementById('global-alert').classList.add('hidden');
-        }
-
-        function resetToLocalDatabase() {
-            activeMatchesState = JSON.parse(JSON.stringify(fallbackBaselineMatches));
-            localStorage.removeItem("fifa_grounded_state");
-            addTerminalLog("Database cleared. Reset to official baseline values.");
-            recalculateMatchStatuses();
-            renderMatches();
-            showNotification("Restored Baseline", "FIFA baseline matches recovered.", true);
-        }
-
-        async function syncWorldCupData() {
-            addTerminalLog("Preparing Real-time Google Search Sync Request...");
-            showNotification("Connecting API...", "Querying real-time Google search for FIFA World Cup 2026 status.", true);
-
-            const apiKey = ""; // Left empty to let the Canvas environment inject the valid runtime key
-            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
-
-            const userQuery = `Search Google for the latest completed match scores, cards, goal events, and upcoming schedules for the FIFA World Cup 2026 group stage.
-            Specifically focus on matchdays June 11, June 12, June 13, June 14, June 15, and June 16, 2026.
-            Return a valid JSON array representing the updated matches schema. Fill out actual scores, actual goalscorers and minutes under baseEvents where available.`;
-
-            addTerminalLog("Grounded search request payload constructed. Contacting Gemini endpoint...");
-
-            const payload = {
-                contents: [{ parts: [{ text: userQuery }] }],
-                tools: [{ "google_search": {} }],
-                systemInstruction: {
-                    parts: [{ text: "You are a professional real-time sports aggregator. Retrieve verified actual scorelines, match statuses, and upcoming schedules for FIFA World Cup 2026 matches. Return your output as a raw JSON array matching our schema. Do not return any wrap text outside the JSON block." }]
-                },
-                generationConfig: {
-                    responseMimeType: "application/json",
-                    responseSchema: {
-                        type: "ARRAY",
-                        items: {
-                            type: "OBJECT",
-                            properties: {
-                                id: { type: "INTEGER" },
-                                dateStr: { type: "STRING" },
-                                kickoffUtc: { type: "STRING" },
-                                localTime: { type: "STRING" },
-                                group: { type: "STRING" },
-                                stadium: { type: "STRING" },
-                                team1: {
-                                    type: "OBJECT",
-                                    properties: {
-                                        name: { type: "STRING" },
-                                        code: { type: "STRING" },
-                                        flag: { type: "STRING" },
-                                        baseScore: { type: "INTEGER" }
-                                    },
-                                    required: ["name", "code", "flag", "baseScore"]
-                                },
-                                team2: {
-                                    type: "OBJECT",
-                                    properties: {
-                                        name: { type: "STRING" },
-                                        code: { type: "STRING" },
-                                        flag: { type: "STRING" },
-                                        baseScore: { type: "INTEGER" }
-                                    },
-                                    required: ["name", "code", "flag", "baseScore"]
-                                },
-                                baseEvents: {
-                                    type: "ARRAY",
-                                    items: {
-                                        type: "OBJECT",
-                                        properties: {
-                                            min: { type: "STRING" },
-                                            type: { type: "STRING" },
-                                            player: { type: "STRING" }
-                                        },
-                                        required: ["min", "type", "player"]
-                                    }
-                                },
-                                stats: {
-                                    type: "OBJECT",
-                                    properties: {
-                                        possession: { type: "ARRAY", items: { type: "INTEGER" } },
-                                        shots: { type: "ARRAY", items: { type: "INTEGER" } },
-                                        fouls: { type: "ARRAY", items: { type: "INTEGER" } },
-                                        corners: { type: "ARRAY", items: { type: "INTEGER" } }
-                                    },
-                                    required: ["possession", "shots", "fouls", "corners"]
-                                },
-                                youtubeId: { type: "STRING" }
-                            },
-                            required: ["id", "dateStr", "kickoffUtc", "group", "stadium", "team1", "team2", "baseEvents", "stats"]
-                        }
-                    }
-                }
-            };
-
-            let attempts = 0;
-            let success = false;
-            let parsedJsonData = null;
-            let citationSources = [];
-
-            while (attempts < 3 && !success) {
-                try {
-                    addTerminalLog(`Sending request to Gemini (Attempt ${attempts + 1}/3)...`);
-                    const response = await fetch(apiUrl, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(payload)
-                    });
-
-                    if (!response.ok) {
-                        throw new Error(`API returned status code: ${response.status}`);
-                    }
-
-                    const result = await response.json();
-                    const candidate = result.candidates?.[0];
-                    const generatedText = candidate?.content?.parts?.[0]?.text;
-
-                    if (generatedText) {
-                        parsedJsonData = JSON.parse(generatedText);
-
-                        const searchMetadata = candidate?.groundingMetadata;
-                        if (searchMetadata && searchMetadata.groundingAttributions) {
-                            citationSources = searchMetadata.groundingAttributions
-                                .map(att => ({
-                                    uri: att.web?.uri,
-                                    title: att.web?.title
-                                }))
-                                .filter(s => s.uri && s.title);
-                        }
-
-                        success = true;
-                    } else {
-                        throw new Error("No textual data returned from grounding model.");
-                    }
-                } catch(err) {
-                    attempts++;
-                    addTerminalLog(`Throttled or offline. Retrying in ${attempts * 2} seconds...`);
-                    await new Promise(r => setTimeout(r, attempts * 2000));
-                }
-            }
-
-            if (success && parsedJsonData) {
-                addTerminalLog(`Sync Successful! Grounded data found: ${parsedJsonData.length} records retrieved.`);
-
-                parsedJsonData.forEach(syncedMatch => {
-                    const localMatchIndex = activeMatchesState.findIndex(m => m.id === syncedMatch.id);
-                    if (localMatchIndex !== -1) {
-                        syncedMatch.officialUrl = activeMatchesState[localMatchIndex].officialUrl;
-                        if (!syncedMatch.youtubeId) {
-                            syncedMatch.youtubeId = activeMatchesState[localMatchIndex].youtubeId;
-                        }
-                        activeMatchesState[localMatchIndex] = syncedMatch;
-                    } else {
-                        activeMatchesState.push(syncedMatch);
-                    }
-                });
-
-                saveMatchesToLocalStorage();
-                renderCitations(citationSources);
-                recalculateMatchStatuses();
-                renderMatches();
-                showNotification("Database Grounded!", "Real-time scores synced via Google search grounding.", true);
-            } else {
-                addTerminalLog("Grounding request failed. Reverting to persistent baseline cache.");
-                showNotification("Sync Warning", "Could not synchronize web scores. Showing offline matchday cache.", false);
-            }
-        }
-
-        function renderCitations(sources) {
-            const container = document.getElementById('citation-container');
-            const linkList = document.getElementById('citation-links');
-            linkList.innerHTML = '';
-
-            if (sources && sources.length > 0) {
-                sources.forEach(src => {
-                    const citation = document.createElement('a');
-                    citation.href = src.uri;
-                    citation.target = "_blank";
-                    citation.className = "text-[11px] text-teal-400 hover:text-indigo-400 underline flex items-center gap-1";
-                    citation.innerHTML = `<i class="fa-solid fa-arrow-up-right-from-square text-[9px]"></i> ${src.title}`;
-                    linkList.appendChild(citation);
-                });
-                container.classList.remove('hidden');
-            } else {
-                container.classList.add('hidden');
-            }
-        }
-
-        function toggleClockMode(mode) {
-            simulationMode = mode;
-            const btnReal = document.getElementById('btn-realtime');
-            const btnSim = document.getElementById('btn-simulated');
-            const simPanel = document.getElementById('sim-control-panel');
-
-            if (mode === 'real') {
-                btnReal.className = "flex-1 lg:flex-none px-3.5 py-2 rounded-lg bg-indigo-600 border border-indigo-500 hover:bg-indigo-500 text-xs font-semibold text-white flex items-center justify-center gap-2 transition-all shadow-lg";
-                btnSim.className = "flex-1 lg:flex-none px-3.5 py-2 rounded-lg bg-slate-900 border border-slate-800 hover:border-slate-700 hover:bg-slate-850 text-xs font-semibold text-slate-300 flex items-center justify-center gap-2 transition-all";
-                simPanel.classList.add('hidden');
-                document.getElementById('simulation-indicator').className = "w-2.5 h-2.5 bg-sky-500 rounded-full animate-pulse-fast";
-                document.getElementById('timezone-badge-text').innerText = "Bound to Local Time";
-                addTerminalLog("Synchronized clock with system time (Real-time).");
-            } else {
-                btnReal.className = "flex-1 lg:flex-none px-3.5 py-2 rounded-lg bg-slate-900 border border-slate-800 hover:border-slate-700 hover:bg-slate-850 text-xs font-semibold text-slate-300 flex items-center justify-center gap-2 transition-all";
-                btnSim.className = "flex-1 lg:flex-none px-3.5 py-2 rounded-lg bg-indigo-600 border border-indigo-500 hover:bg-indigo-500 text-xs font-semibold text-white flex items-center justify-center gap-2 transition-all shadow-lg";
-                simPanel.classList.remove('hidden');
-                document.getElementById('simulation-indicator').className = "w-2.5 h-2.5 bg-emerald-500 rounded-full animate-pulse-fast";
-                document.getElementById('timezone-badge-text').innerText = "Simulating UTC Dates";
-                addTerminalLog("Switched on manual Time-Travel simulator controller.");
-            }
-            updateClock();
-            recalculateMatchStatuses();
-            renderMatches();
-        }
-
-        function applyPresetDate(preset) {
-            const presets = {
-                'june11': "2026-06-11T23:30:00Z",
-                'june14': "2026-06-14T23:30:00Z",
-                'june15-morning': "2026-06-15T14:00:00Z",
-                'june15-midday': "2026-06-15T17:15:00Z",
-                'june15-afternoon': "2026-06-15T20:20:00Z",
-                'june15-evening': "2026-06-15T23:30:00Z",
-                'june16': "2026-06-16T21:00:00Z"
-            };
-
-            if (presets[preset]) {
-                currentSimulatedTime = new Date(presets[preset]);
-                document.getElementById('hour-slider').value = currentSimulatedTime.getUTCHours();
-                document.getElementById('slider-hour-label').innerText = `${String(currentSimulatedTime.getUTCHours()).padStart(2, '0')}:00 UTC`;
-                addTerminalLog(`Preset adjusted to: ${preset.toUpperCase()}`);
-                recalculateMatchStatuses();
-                renderMatches();
-            }
-        }
-
-        function adjustHour(hour) {
-            currentSimulatedTime.setUTCHours(hour);
-            document.getElementById('slider-hour-label').innerText = `${String(hour).padStart(2, '0')}:00 UTC`;
-            recalculateMatchStatuses();
-            renderMatches();
-        }
-
-        function updateClock() {
-            const clockEl = document.getElementById('current-clock-display');
-            if (simulationMode === 'real') {
-                const now = new Date();
-                clockEl.innerText = now.toLocaleString();
-            } else {
-                currentSimulatedTime = new Date(currentSimulatedTime.getTime() + 1000);
-                clockEl.innerText = currentSimulatedTime.toUTCString();
-            }
-        }
-
-        function recalculateMatchStatuses() {
-            const now = (simulationMode === 'real') ? new Date() : currentSimulatedTime;
-
-            activeMatchesState.forEach(match => {
-                const kickoff = new Date(match.kickoffUtc);
-                const differenceMs = now - kickoff;
-                const matchDurationMinutes = 105;
-
-                if (differenceMs < 0) {
-                    match.computedStatus = 'upcoming';
-                    match.liveMinute = 0;
-                    match.score1 = 0;
-                    match.score2 = 0;
-                    match.events = [];
-                    const hoursLeft = Math.ceil(-differenceMs / (1000 * 60 * 60));
-                    match.countdownLabel = hoursLeft > 24 ? "Starts tomorrow" : `Starts in ${hoursLeft}h`;
-                } else if (differenceMs >= 0 && differenceMs < (matchDurationMinutes * 60 * 1000)) {
-                    match.computedStatus = 'live';
-                    const elapsedMinutes = Math.floor(differenceMs / (60 * 1000));
-                    match.liveMinute = elapsedMinutes;
-                    match.isHalftime = elapsedMinutes >= 45 && elapsedMinutes <= 60;
-
-                    const simulatedScoreAndEvents = getLiveIncidents(match, elapsedMinutes);
-                    match.score1 = simulatedScoreAndEvents.score1;
-                    match.score2 = simulatedScoreAndEvents.score2;
-                    match.events = simulatedScoreAndEvents.events;
-                } else {
-                    match.computedStatus = 'completed';
-                    match.liveMinute = 90;
-                    match.score1 = match.team1.baseScore;
-                    match.score2 = match.team2.baseScore;
-                    match.events = [...match.baseEvents];
-                }
-            });
-            calculateSidebarStatistics();
-        }
-
-        function getLiveIncidents(match, currentMin) {
-            let score1 = 0;
-            let score2 = 0;
-            let events = [];
-
-            match.baseEvents.forEach(evt => {
-                const eventMinute = parseInt(evt.min.replace(/[^0-9]/g, ''));
-                if (currentMin >= eventMinute) {
-                    events.push(evt);
-                    if (evt.type === 'goal') {
-                        if (evt.player.includes(`(${match.team1.code})`) || evt.player.includes(match.team1.name)) {
-                            score1++;
-                        } else {
-                            score2++;
-                        }
-                    }
-                }
-            });
-            return { score1, score2, events };
-        }
-
-        function setFilter(filter) {
-            activeFilter = filter;
-            document.querySelectorAll('.nav-tab').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            document.querySelector(`[data-filter="${filter}"]`).classList.add('active');
-
-            const sectionTitles = {
-                'all': 'All Tournament Fixtures',
-                'live': 'Live Matches Running Right Now',
-                'upcoming': 'Scheduled Upcoming Matches',
-                'completed': 'Finished Matches & Video Highlights'
-            };
-            document.getElementById('section-title').innerText = sectionTitles[filter];
-            renderMatches();
-        }
-
-        function calculateSidebarStatistics() {
-            let totalGoals = 0;
-            let totalCompleted = 0;
-            let totalLive = 0;
-            let totalUpcoming = 0;
-
-            activeMatchesState.forEach(match => {
-                if (match.computedStatus === 'completed') {
-                    totalCompleted++;
-                    totalGoals += (match.score1 + match.score2);
-                } else if (match.computedStatus === 'live') {
-                    totalLive++;
-                    totalGoals += (match.score1 + match.score2);
-                } else {
-                    totalUpcoming++;
-                }
-            });
-
-            document.getElementById('stat-completed').innerText = totalCompleted;
-            document.getElementById('stat-live').innerText = totalLive;
-            document.getElementById('stat-upcoming').innerText = totalUpcoming;
-            document.getElementById('stat-goals').innerText = totalGoals;
-
-            const liveCard = document.getElementById('stat-live-card');
-            const liveIconHolder = document.getElementById('stat-live-icon-holder');
-            const liveIcon = document.getElementById('stat-live-icon');
-            const filterLiveDot = document.getElementById('filter-live-dot');
-            const legendLiveDot = document.getElementById('legend-live-dot');
-
-            if (totalLive > 0) {
-                liveCard.classList.add('border-l-2', 'border-l-emerald-500');
-                liveIconHolder.className = "w-10 h-10 rounded-lg bg-emerald-500/10 flex items-center justify-center text-emerald-400";
-                liveIcon.className = "fa-solid fa-signal text-emerald-400 animate-pulse-fast";
-                filterLiveDot.className = "w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse-fast";
-                legendLiveDot.className = "w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse";
-            } else {
-                liveCard.classList.remove('border-l-2', 'border-l-emerald-500');
-                liveIconHolder.className = "w-10 h-10 rounded-lg bg-slate-800 flex items-center justify-center text-slate-400";
-                liveIcon.className = "fa-solid fa-signal";
-                filterLiveDot.className = "w-1.5 h-1.5 rounded-full bg-slate-500";
-                legendLiveDot.className = "w-2.5 h-2.5 rounded-full bg-slate-500";
-            }
-        }
-
-        function renderMatches() {
-            const grid = document.getElementById('matches-grid');
-            grid.innerHTML = '';
-
-            const filteredMatches = activeMatchesState.filter(m => activeFilter === 'all' || m.computedStatus === activeFilter);
-
-            if (filteredMatches.length === 0) {
-                grid.innerHTML = `
-                    <div class="col-span-full py-16 text-center text-slate-400 bg-brand-deep rounded-2xl border border-dashed border-slate-800">
-                        <i class="fa-regular fa-calendar-xmark text-4xl mb-3 text-slate-600"></i>
-                        <p class="font-bold text-sm text-white">No matches found in this view</p>
-                        <p class="text-xs mt-1 text-slate-500">
-                            ${simulationMode === 'real'
-                                ? 'No live matches are occurring right now. Click on "Search & Sync Live Scores" above to pull direct grounded API results!'
-                                : 'Try selecting a different simulation preset or tab filter.'}
-                        </p>
-                    </div>`;
-                return;
-            }
-
-            filteredMatches.forEach(match => {
-                const card = document.createElement('div');
-                const isLive = match.computedStatus === 'live';
-                const isCompleted = match.computedStatus === 'completed';
-
-                let borderStyle = "border-slate-800/80";
-                if (isLive) borderStyle = "border-emerald-500/40 live-glow";
-                if (isCompleted) borderStyle = "border-indigo-500/30";
-
-                card.className = `stadium-card rounded-2xl p-5 cursor-pointer relative overflow-hidden group border ${borderStyle}`;
-                card.onclick = () => openModal(match.id);
-
-                let statusBadge = '';
-                if (isLive) {
-                    const displayMin = match.isHalftime ? "Halftime" : `${match.liveMinute}'`;
-                    statusBadge = `
-                        <div class="bg-emerald-500/10 border border-emerald-500 text-emerald-400 text-[10px] font-black px-2.5 py-0.5 rounded flex items-center gap-1">
-                            <span class="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse-fast"></span>
-                            ${displayMin}
-                        </div>`;
-                } else if (isCompleted) {
-                    statusBadge = `<div class="bg-indigo-950/40 text-indigo-300 border border-indigo-500/30 text-[10px] font-bold px-2 py-0.5 rounded">FULL TIME</div>`;
-                } else {
-                    statusBadge = `
-                        <div class="bg-slate-900 border border-slate-800 text-slate-400 text-[10px] font-mono font-bold px-2 py-0.5 rounded flex flex-col items-end">
-                            <span>${match.localTime}</span>
-                            <span class="text-[9px] text-amber-500 mt-0.5">${match.countdownLabel || ''}</span>
-                        </div>`;
-                }
-
-                let goalsHtml = '';
-                if (!isCompleted && !isLive) {
-                    goalsHtml = `
-                        <div class="mt-4 pt-3 border-t border-slate-900 text-[11px] text-slate-500 flex items-center gap-1.5 font-semibold">
-                            <i class="fa-regular fa-clock"></i> Match Scheduled
-                        </div>`;
-                } else {
-                    const goalsOnly = (match.events || []).filter(e => e.type === 'goal');
-                    if (goalsOnly.length > 0) {
-                        goalsHtml = `<div class="mt-4 pt-3 border-t border-slate-900 text-[11px] text-slate-400 space-y-1">`;
-                        goalsOnly.forEach(g => {
-                            goalsHtml += `
-                                <div class="flex items-center gap-1.5">
-                                    <i class="fa-solid fa-futbol text-emerald-500 text-[10px]"></i>
-                                    <span class="font-semibold text-slate-300 truncate">${g.player}</span>
-                                    <span class="text-slate-500 text-[9px] font-mono">${g.min}</span>
-                                </div>`;
-                        });
-                        goalsHtml += `</div>`;
-                    }
-                }
-
-                const liveIndicatorBar = isLive ? `<div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-emerald-500 to-teal-400"></div>` : '';
-
-                card.innerHTML = `
-                    ${liveIndicatorBar}
-                    <div class="flex justify-between items-center mb-4">
-                        <span class="text-[10px] font-bold text-slate-400 tracking-wider uppercase">${match.group} • ${match.dateStr}</span>
-                        ${statusBadge}
-                    </div>
-
-                    <div class="space-y-3.5">
-                        <div class="flex justify-between items-center">
-                            <div class="flex items-center gap-3">
-                                <span class="text-2xl filter drop-shadow">${match.team1.flag}</span>
-                                <span class="font-extrabold text-sm text-white">${match.team1.name}</span>
-                            </div>
-                            <span class="font-mono font-black text-xl text-white">${!isCompleted && !isLive ? '-' : match.score1}</span>
-                        </div>
-                        <div class="flex justify-between items-center">
-                            <div class="flex items-center gap-3">
-                                <span class="text-2xl filter drop-shadow">${match.team2.flag}</span>
-                                <span class="font-extrabold text-sm text-white">${match.team2.name}</span>
-                            </div>
-                            <span class="font-mono font-black text-xl text-white">${!isCompleted && !isLive ? '-' : match.score2}</span>
-                        </div>
-                    </div>
-
-                    <div class="mt-4 text-[10px] text-slate-400 flex items-center gap-1.5 bg-slate-950 p-2 rounded-lg border border-slate-900">
-                        <i class="fa-solid fa-location-dot text-indigo-400"></i> <span class="truncate font-semibold">${match.stadium}</span>
-                    </div>
-
-                    ${goalsHtml}
-
-                    <div class="mt-4 pt-3 flex justify-between items-center border-t border-slate-900 text-[10px]">
-                        <span class="text-indigo-400 font-bold flex items-center gap-1 group-hover:text-indigo-300 transition-colors">
-                            View Statistics <i class="fa-solid fa-chevron-right transition-transform group-hover:translate-x-1"></i>
-                        </span>
-                        ${isCompleted ? '<span class="text-red-500 font-bold flex items-center gap-1"><i class="fa-brands fa-youtube"></i> Play Video Highlights</span>' : ''}
-                    </div>
-                `;
-                grid.appendChild(card);
-            });
-        }
-
-        function playYouTubeVideo(youtubeId) {
-            const container = document.getElementById('media-player-container');
-            if (!youtubeId) {
-                container.innerHTML = `
-                    <div class="p-6 text-center text-slate-400">
-                        <i class="fa-brands fa-youtube text-red-500 text-5xl mb-3"></i>
-                        <h4 class="text-sm font-bold text-white">Highlights coming soon!</h4>
-                        <p class="text-xs text-slate-500 mt-1">Video highlights will be available after the official FIFA match completion.</p>
-                    </div>
-                `;
-                return;
-            }
-            container.innerHTML = `
-                <div class="w-full h-full relative aspect-video rounded-lg overflow-hidden border border-slate-800">
-                    <iframe class="w-full h-full absolute inset-0"
-                        src="https://www.youtube.com/embed/${youtubeId}?autoplay=1&rel=0"
-                        title="FIFA World Cup Highlights"
-                        frameborder="0"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                        allowfullscreen>
-                    </iframe>
-                </div>
-            `;
-        }
-
-        function resetVideoPlayer(youtubeId) {
-            const videoContainer = document.getElementById('media-player-container');
-            const bgStyle = youtubeId ? `background-image: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.85)), url('https://img.youtube.com/vi/${youtubeId}/hqdefault.jpg'); background-size: cover; background-position: center;` : '';
-
-            videoContainer.innerHTML = `
-                <div id="highlights-video" class="w-full h-full relative rounded-lg overflow-hidden bg-slate-900 border border-slate-800 flex flex-col justify-center items-center py-16" style="${bgStyle}">
-                    <div class="relative z-10 p-6 flex flex-col items-center">
-                        <span class="w-16 h-16 rounded-full bg-red-600 hover:bg-red-500 text-white flex items-center justify-center text-2xl hover:scale-110 transition-transform cursor-pointer shadow-xl border border-red-400/30 animate-pulse" onclick="playYouTubeVideo('${youtubeId}')">
-                            <i class="fa-solid fa-play ml-1"></i>
-                        </span>
-                        <h4 class="mt-4 font-black text-sm text-white drop-shadow">Watch Match Highlights</h4>
-                        <p class="text-xs text-slate-200 mt-1 max-w-xs text-center drop-shadow">Play direct game footage and goals coverage synced from official networks.</p>
-                    </div>
-                </div>
-            `;
-        }
-
-        function openModal(matchId) {
-            const match = activeMatchesState.find(m => m.id === matchId);
-            if (!match) return;
-
-            const isLive = match.computedStatus === 'live';
-            const isCompleted = match.computedStatus === 'completed';
-
-            document.getElementById('modal-title').innerHTML = `
-                <span class="text-indigo-400 font-bold uppercase text-xs mr-2">[${match.group}]</span> ${match.team1.name} vs ${match.team2.name} Match Hub
-            `;
-
-            const banner = document.getElementById('modal-live-banner');
-            const fallback = document.getElementById('modal-rights-fallback');
-            const highlightsVideo = document.getElementById('highlights-video');
-            const modalLink = document.getElementById('modal-external-link');
-
-            modalLink.href = match.officialUrl;
-
-            if (isLive) {
-                banner.classList.remove('hidden');
-                fallback.classList.remove('hidden');
-                if (highlightsVideo) highlightsVideo.classList.add('hidden');
-                fallback.querySelector('h4').innerText = "Live Match in Progress";
-                fallback.querySelector('p').innerText = "This fixture is currently playing live. Real-time statistical graphs and data charts are updated dynamically.";
-            } else if (isCompleted) {
-                banner.classList.add('hidden');
-                fallback.classList.add('hidden');
-                resetVideoPlayer(match.youtubeId);
-            } else {
-                banner.classList.add('hidden');
-                fallback.classList.remove('hidden');
-                if (highlightsVideo) highlightsVideo.classList.add('hidden');
-                fallback.querySelector('h4').innerText = "Pre-Match Countdown";
-                fallback.querySelector('p').innerText = "This match hasn't kicked off yet. Switch to simulation mode or wait for standard timezone kickoff.";
-            }
-
-            let detailsHtml = `
-                <div class="flex justify-between items-center border-b border-slate-900 pb-4 mb-5">
-                    <div class="text-center w-1/3">
-                        <div class="text-4xl drop-shadow">${match.team1.flag}</div>
-                        <div class="font-extrabold text-xs text-white mt-1.5">${match.team1.name}</div>
-                    </div>
-                    <div class="text-center w-1/3">
-                        <div class="text-2xl font-black bg-slate-900 rounded-lg px-4 py-1.5 text-white inline-block border border-slate-800">
-                            ${!isCompleted && !isLive ? '-' : match.score1} : ${!isCompleted && !isLive ? '-' : match.score2}
-                        </div>
-                        <div class="text-[10px] text-slate-400 mt-2 font-mono uppercase font-bold tracking-wider">
-                            ${isLive ? `<span class="text-emerald-400 font-bold animate-pulse">Playing - Minute ${match.liveMinute}'</span>` : match.computedStatus}
-                        </div>
-                    </div>
-                    <div class="text-center w-1/3">
-                        <div class="text-4xl drop-shadow">${match.team2.flag}</div>
-                        <div class="font-extrabold text-xs text-white mt-1.5">${match.team2.name}</div>
-                    </div>
-                </div>
-
-                <div class="mb-6 space-y-4">
-                    <h4 class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 flex items-center gap-1.5">
-                        <i class="fa-solid fa-chart-bar text-indigo-400"></i> Match Comparison Analytics
-                    </h4>
-
-                    <div class="space-y-4 bg-slate-900 p-4 rounded-xl border border-slate-800/60 text-xs">
-                        <!-- Possession Bar -->
-                        <div>
-                            <div class="flex justify-between text-slate-300 mb-1 font-bold font-mono">
-                                <span>${match.stats.possession[0]}%</span>
-                                <span class="text-[9px] text-slate-500 uppercase tracking-widest font-bold">Ball Possession</span>
-                                <span>${match.stats.possession[1]}%</span>
-                            </div>
-                            <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden flex">
-                                <div class="bg-indigo-500 h-full" style="width: ${match.stats.possession[0]}%"></div>
-                                <div class="bg-pink-500 h-full" style="width: ${match.stats.possession[1]}%"></div>
-                            </div>
-                        </div>
-
-                        <!-- Shots Bar -->
-                        <div>
-                            <div class="flex justify-between text-slate-300 mb-1 font-bold font-mono">
-                                <span>${match.stats.shots[0]}</span>
-                                <span class="text-[9px] text-slate-500 uppercase tracking-widest font-bold">Shots</span>
-                                <span>${match.stats.shots[1]}</span>
-                            </div>
-                            <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden flex">
-                                <div class="bg-indigo-500 h-full" style="width: ${(match.stats.shots[0]/(match.stats.shots[0]+match.stats.shots[1] || 1))*100}%"></div>
-                                <div class="bg-pink-500 h-full" style="width: ${(match.stats.shots[1]/(match.stats.shots[0]+match.stats.shots[1] || 1))*100}%"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div>
-                    <h4 class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">Match Events Timeline</h4>
-                    <div class="space-y-2">
-            `;
-
-            if (!match.events || match.events.length === 0) {
-                detailsHtml += `
-                    <div class="text-center py-6 text-slate-500 bg-slate-900 rounded-xl border border-slate-800/60 italic text-xs">
-                        No timeline events occurred or game has not started yet.
-                    </div>
-                `;
-            } else {
-                match.events.forEach(e => {
-                    let iconMarkup = '';
-                    if (e.type === 'goal') {
-                        iconMarkup = '<i class="fa-solid fa-futbol text-emerald-400 animate-spin"></i>';
-                    } else if (e.type === 'card-yellow') {
-                        iconMarkup = '<span class="w-2.5 h-3.5 bg-amber-400 rounded-sm inline-block"></span>';
-                    } else if (e.type === 'card-red') {
-                        iconMarkup = '<span class="w-2.5 h-3.5 bg-rose-600 rounded-sm inline-block animate-pulse"></span>';
-                    }
-
-                    detailsHtml += `
-                        <div class="flex items-center gap-3 bg-slate-900 p-2.5 rounded-lg border border-slate-800/60">
-                            <span class="font-mono font-bold text-indigo-400 text-xs w-10 text-right">${e.min}</span>
-                            <span class="w-5 flex justify-center">${iconMarkup}</span>
-                            <span class="text-xs font-semibold text-slate-200">${e.player}</span>
-                        </div>
-                    `;
-                });
-            }
-
-            detailsHtml += `</div></div>`;
-            document.getElementById('modal-details-panel').innerHTML = detailsHtml;
-
-            const modal = document.getElementById('match-modal');
-            const content = document.getElementById('match-modal-content');
-
-            modal.classList.remove('hidden');
-            setTimeout(() => {
-                content.className = "bg-brand-deep border border-slate-800 rounded-2xl w-full max-w-4xl overflow-hidden shadow-2xl transform transition-all scale-100 opacity-100";
-            }, 50);
-
-            document.body.style.overflow = 'hidden';
-        }
-
-        function closeModal() {
-            const modal = document.getElementById('match-modal');
-            const content = document.getElementById('match-modal-content');
-
-            content.className = "bg-brand-deep border border-slate-800 rounded-2xl w-full max-w-4xl overflow-hidden shadow-2xl transform transition-all scale-95 opacity-0";
-
-            setTimeout(() => {
-                modal.classList.add('hidden');
-                document.body.style.overflow = 'auto';
-            }, 200);
-        }
-
-        document.getElementById('match-modal').addEventListener('click', function(e) {
-            if (e.target === this) {
-                closeModal();
-            }
+      });
+
+      try {
+        const userRef = doc(db, 'artifacts', appId, 'public', 'data', 'users', currentUser.uid);
+        await updateDoc(userRef, {
+          points: scoreCalculated,
+          predictionCount: Object.keys(localPredictions).length,
+          lastSynced: Date.now()
         });
 
-        function runLiveSimulatorEngine() {
-            let stateChanged = false;
+        document.getElementById("user-hud-points").textContent = scoreCalculated;
+        document.getElementById("dropdown-user-points").textContent = `${scoreCalculated} pts`;
 
-            activeMatchesState.forEach(match => {
-                if (match.computedStatus === 'live' && !match.isHalftime) {
-                    if (Math.random() < 0.04) {
-                        stateChanged = true;
-                        const teamToggle = Math.random() > 0.5;
-                        const eventType = Math.random() > 0.7 ? 'card-yellow' : 'goal';
+        showNotification(`Sync Complete! Your Score: ${scoreCalculated} pts (${totalCompletedPredictions} matches verified)`, "success");
+      } catch (error) {
+        console.error("Error updating synced points in database: ", error);
+        showNotification("Failed to write updated score to leaderboards.", "error");
+      }
+    };
 
-                        let scorer = '';
-                        if (eventType === 'goal') {
-                            if (teamToggle) {
-                                match.score1++;
-                                scorer = `Simulated Goal (${match.team1.code})`;
-                                match.stats.shots[0] += 1;
-                            } else {
-                                match.score2++;
-                                scorer = `Simulated Goal (${match.team2.code})`;
-                                match.stats.shots[1] += 1;
-                            }
-                        } else {
-                            scorer = teamToggle ? `Caution Card (${match.team1.code})` : `Caution Card (${match.team2.code})`;
-                        }
+    window.triggerManualSync = function() {
+      syncWithWorldCupScores();
+    };
 
-                        match.events.push({
-                            min: `${match.liveMinute}'`,
-                            type: eventType,
-                            player: scorer
-                        });
-                    }
-                }
-            });
+    // Custom Modal Controllers (Replaces native confirm/alert prompts to avoid iFrame sandbox blocks)
+    const confirmModal = document.getElementById("custom-confirm-modal");
+    const modalCancelBtn = document.getElementById("modal-cancel-btn");
+    const modalConfirmBtn = document.getElementById("modal-confirm-btn");
+    let confirmCallback = null;
 
-            if (stateChanged) {
-                renderMatches();
-            }
+    window.showConfirmModal = function(callback) {
+      confirmCallback = callback;
+      if (confirmModal) confirmModal.classList.remove("hidden");
+    };
+
+    window.closeConfirmModal = function() {
+      if (confirmModal) confirmModal.classList.add("hidden");
+      confirmCallback = null;
+    };
+
+    if (modalCancelBtn) {
+      modalCancelBtn.addEventListener("click", () => {
+        closeConfirmModal();
+      });
+    }
+
+    if (modalConfirmBtn) {
+      modalConfirmBtn.addEventListener("click", async () => {
+        if (confirmCallback) {
+          await confirmCallback();
+        }
+        closeConfirmModal();
+      });
+    }
+
+    window.resetAllPredictions = function() {
+      if (!currentUser) return;
+      
+      showConfirmModal(async () => {
+        localPredictions = {};
+        updatePredictionsCounter();
+        renderMatches();
+
+        try {
+          const docRef = doc(db, 'artifacts', appId, 'users', currentUser.uid, 'predictions', 'all_predictions');
+          await setDoc(docRef, {});
+          
+          // Direct points reset in Firestore to solve user stale caching points
+          const userRef = doc(db, 'artifacts', appId, 'public', 'data', 'users', currentUser.uid);
+          await updateDoc(userRef, {
+            points: 0,
+            predictionCount: 0,
+            lastSynced: Date.now()
+          });
+
+          document.getElementById("user-hud-points").textContent = "0";
+          document.getElementById("dropdown-user-points").textContent = "0 pts";
+          
+          showNotification("All predictions cleared & points reset to 0!", "success");
+        } catch (err) {
+          console.error(err);
+          showNotification("Failed to clear predictions and reset points properly.", "error");
+        }
+      });
+    };
+
+    window.renderLeaderboard = function() {
+      const podiumContainer = document.getElementById("leaderboard-podium");
+      const rowsContainer = document.getElementById("leaderboard-rows");
+      
+      podiumContainer.innerHTML = "";
+      rowsContainer.innerHTML = "";
+
+      if (leaderboardUsers.length === 0) {
+        rowsContainer.innerHTML = `
+          <tr>
+            <td colspan="4" class="text-center py-8 text-slate-500">No active portal users found yet.</td>
+          </tr>
+        `;
+        return;
+      }
+
+      const sortedUsers = [...leaderboardUsers].sort((a, b) => (b.points || 0) - (a.points || 0));
+      const topThree = sortedUsers.slice(0, 3);
+
+      // Re-ordered visual array mapped with Tailwind's ordering variables to guarantee Rank 1 sits at the absolute top on mobile stacked layout
+      const podiumOrder = [];
+      if (topThree[1]) podiumOrder.push({ user: topThree[1], rank: 2 }); // Desktop: Left, Mobile: Second
+      if (topThree[0]) podiumOrder.push({ user: topThree[0], rank: 1 }); // Desktop: Center, Mobile: First
+      if (topThree[2]) podiumOrder.push({ user: topThree[2], rank: 3 }); // Desktop: Right, Mobile: Third
+
+      podiumOrder.forEach((item) => {
+        const isSelf = currentUser && item.user.uid === currentUser.uid;
+        const displayName = isSelf ? item.user.email : maskEmailSecure(item.user.email);
+        
+        let badgeIcon = "";
+        let badgeColor = "";
+        let borderGlow = "";
+        let animClass = "";
+        let visualOrderClass = "";
+
+        if (item.rank === 1) {
+          badgeIcon = `<i class="fa-solid fa-gem text-3xl text-sky-400"></i>`;
+          badgeColor = "text-sky-400";
+          borderGlow = "border-sky-500/50 bg-slate-900 glow-emerald-lg ring-2 ring-sky-500/20";
+          animClass = "animate-diamond";
+          visualOrderClass = "order-1 md:order-2 md:-translate-y-3"; // Rank 1 sits visually top on mobile, center on desktop
+        } else if (item.rank === 2) {
+          badgeIcon = `<i class="fa-solid fa-medal text-3xl text-amber-400"></i>`;
+          badgeColor = "text-amber-400";
+          borderGlow = "border-amber-500/30 bg-slate-900";
+          animClass = "animate-gold";
+          visualOrderClass = "order-2 md:order-1"; // Rank 2 sits visually middle on mobile, left on desktop
+        } else {
+          badgeIcon = `<i class="fa-solid fa-medal text-3xl text-slate-400"></i>`;
+          badgeColor = "text-slate-400";
+          borderGlow = "border-slate-700/40 bg-slate-900";
+          animClass = "animate-silver";
+          visualOrderClass = "order-3 md:order-3"; // Rank 3 sits visually bottom on mobile, right on desktop
         }
 
-        window.onload = () => {
-            initMatchesState();
-            recalculateMatchStatuses();
-            renderMatches();
+        const podCard = document.createElement("div");
+        podCard.className = `w-full md:w-1/3 border rounded-2xl p-5 text-center flex flex-col items-center justify-center relative overflow-hidden transition-all transform hover:scale-[1.02] ${borderGlow} ${visualOrderClass}`;
+        
+        podCard.innerHTML = `
+          <div class="absolute top-2 left-2 font-sporty text-xs font-bold px-2 py-0.5 rounded-md bg-slate-950 border border-slate-800 text-slate-400">
+            #${item.rank}
+          </div>
 
-            setInterval(updateClock, 1000);
-            setInterval(runLiveSimulatorEngine, 5000);
-            addTerminalLog("FIFA Matchday Console initialized. Auto-Sync ready.");
-        };
-    </script>
+          <div class="mb-3 ${animClass}">
+            ${badgeIcon}
+          </div>
+
+          <div class="text-sm font-bold truncate max-w-full ${isSelf ? 'text-emerald-400 font-extrabold' : 'text-slate-200'}">
+            ${displayName}
+            ${isSelf ? '<span class="block text-[10px] text-emerald-400 font-semibold uppercase tracking-widest mt-0.5">(You)</span>' : ''}
+          </div>
+
+          <div class="mt-2 font-sporty flex items-baseline space-x-1">
+            <span class="text-2xl font-extrabold ${badgeColor}">${item.user.points || 0}</span>
+            <span class="text-xs text-slate-400 font-bold">pts</span>
+          </div>
+          
+          <span class="text-[10px] text-slate-500 mt-1 uppercase tracking-wide font-sporty">
+            ${item.user.predictionCount || 0} Predicted
+          </span>
+        `;
+        podiumContainer.appendChild(podCard);
+      });
+
+      sortedUsers.forEach((userItem, index) => {
+        const rank = index + 1;
+        const isSelf = currentUser && userItem.uid === currentUser.uid;
+        const displayName = isSelf ? userItem.email : maskEmailSecure(userItem.email);
+
+        const row = document.createElement("tr");
+        row.className = `hover:bg-slate-900/40 transition-colors ${isSelf ? 'bg-emerald-950/20 border-l-2 border-l-emerald-500' : ''}`;
+        
+        let rankBadge = `<span class="font-sporty font-bold text-slate-400">#${rank}</span>`;
+        if (rank === 1) rankBadge = `<span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-sky-950 border border-sky-600 text-sky-400 font-bold font-sporty text-xs">1</span>`;
+        if (rank === 2) rankBadge = `<span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-amber-950 border border-amber-600 text-amber-400 font-bold font-sporty text-xs">2</span>`;
+        if (rank === 3) rankBadge = `<span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-slate-800 border border-slate-600 text-slate-300 font-bold font-sporty text-xs">3</span>`;
+
+        row.innerHTML = `
+          <td class="py-3 px-3 text-center">${rankBadge}</td>
+          <td class="py-3 px-3">
+            <div class="flex items-center space-x-2">
+              <span class="font-semibold text-slate-200 truncate max-w-[120px] xs:max-w-none ${isSelf ? 'text-emerald-400 font-black' : ''}">
+                ${displayName}
+              </span>
+              ${isSelf ? '<span class="text-[9px] bg-emerald-950 text-emerald-400 border border-emerald-800 px-2 py-0.5 rounded uppercase font-bold">YOU</span>' : ''}
+            </div>
+          </td>
+          <td class="py-3 px-3 text-right font-sporty text-slate-400 text-xs">
+            ${userItem.predictionCount || 0} Pred
+          </td>
+          <td class="py-3 px-3 text-right pr-4 xs:pr-6">
+            <span class="font-sporty font-bold text-slate-100">${userItem.points || 0}</span>
+            <span class="text-[11px] text-slate-500 font-semibold font-sporty ml-0.5">pts</span>
+          </td>
+        `;
+        rowsContainer.appendChild(row);
+      });
+    };
+
+    function maskEmailSecure(email) {
+      if (!email) return "anonymous***@fifa.com";
+      const parts = email.split("@");
+      if (parts.length !== 2) return "user***";
+      
+      const username = parts[0];
+      const domain = parts[1];
+
+      if (username.length <= 3) {
+        return `${username}***@${domain}`;
+      } else {
+        return `${username.substring(0, 3)}***@${domain}`;
+      }
+    }
+
+  </script>
+
+  <!-- Custom Confirmation Modal (Rule Compliant - Replaces native confirm) -->
+  <div id="custom-confirm-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/85 backdrop-blur-sm">
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-sm w-full p-6 shadow-2xl transform scale-100 transition-transform">
+      <div class="text-center">
+        <div class="inline-flex p-3 bg-rose-950/50 rounded-full text-rose-500 border border-rose-800/50 mb-4">
+          <i class="fa-solid fa-triangle-exclamation text-2xl"></i>
+        </div>
+        <h3 class="text-lg font-bold text-slate-100 font-sporty">Reset Predictions & Points?</h3>
+        <p class="text-xs text-slate-400 mt-2">This will permanently delete your predictions and reset your total score back to <span class="text-emerald-400 font-bold">0 pts</span>.</p>
+      </div>
+      <div class="mt-6 flex space-x-3">
+        <button id="modal-cancel-btn" class="flex-1 py-2.5 px-4 bg-slate-800 hover:bg-slate-700 transition-colors text-slate-300 rounded-xl text-xs font-semibold uppercase tracking-wider min-h-[44px]">
+          Cancel
+        </button>
+        <button id="modal-confirm-btn" class="flex-1 py-2.5 px-4 bg-gradient-to-r from-rose-500 to-red-600 hover:opacity-90 transition-opacity text-white rounded-xl text-xs font-bold uppercase tracking-wider font-sporty min-h-[44px]">
+          Reset to 0
+        </button>
+      </div>
+    </div>
+  </div>
 </body>
 </html>
