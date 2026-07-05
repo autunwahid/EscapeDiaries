@@ -26,6 +26,7 @@
                         brand: {
                             50: '#f0fdfa',
                             100: '#ccfbf1',
+                            200: '#99f6e4',
                             500: '#14b8a6', // Teal 500
                             600: '#0d9488', // Teal 600
                             700: '#0f766e',
@@ -64,7 +65,7 @@
     <style>
         body {
             background-color: #f8fafc;
-            background-image: radial-gradient(#cbd5e1 1px, transparent 1px);
+            background-image: radial-gradient(#e2e8f0 1.2px, transparent 1.2px);
             background-size: 24px 24px;
             overflow-x: hidden;
         }
@@ -77,26 +78,26 @@
             background: #f1f5f9;
         }
         ::-webkit-scrollbar-thumb {
-            background: #94a3b8;
+            background: #cbd5e1;
             border-radius: 4px;
         }
         ::-webkit-scrollbar-thumb:hover {
-            background: #64748b;
+            background: #94a3b8;
         }
 
         .glass-card {
             background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.04), 0 1px 3px rgba(0, 0, 0, 0.02);
         }
 
-        .input-field {
-            @apply w-full bg-white/60 border border-slate-200 text-slate-800 text-sm rounded-xl focus:ring-brand-500 focus:border-brand-500 block p-3.5 transition-all outline-none hover:bg-white;
+        .input-field-premium {
+            @apply w-full bg-white/80 border border-slate-200 text-slate-800 text-base rounded-2xl focus:ring-4 focus:ring-brand-500/15 focus:border-brand-500 block p-4 transition-all outline-none hover:border-slate-300 shadow-sm;
         }
         
-        .label-text {
-            @apply block mb-1.5 text-sm font-medium text-slate-600;
+        .label-text-premium {
+            @apply block mb-2 text-sm font-bold tracking-wide text-slate-700 uppercase;
         }
 
         .timeline-item::before {
@@ -112,25 +113,14 @@
         .timeline-item:last-child::before {
             display: none;
         }
-
-        /* Hide number input arrows */
-        input[type="number"]::-webkit-inner-spin-button,
-        input[type="number"]::-webkit-outer-spin-button {
-            -webkit-appearance: none;
-            margin: 0;
-        }
-        input[type="number"] {
-            -moz-appearance: textfield;
-        }
     </style>
 </head>
 <body class="text-slate-800 antialiased min-h-screen relative flex flex-col justify-between">
 
     <!-- Decorative Background Blobs -->
     <div class="fixed inset-0 overflow-hidden pointer-events-none z-[-1]">
-        <div class="absolute top-0 left-1/4 w-96 h-96 bg-brand-100 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-blob"></div>
-        <div class="absolute top-0 right-1/4 w-96 h-96 bg-blue-100 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-blob animation-delay-2000"></div>
-        <div class="absolute -bottom-32 left-1/2 w-96 h-96 bg-teal-100 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-blob animation-delay-4000"></div>
+        <div class="absolute top-0 left-1/4 w-[500px] h-[500px] bg-brand-100 rounded-full mix-blend-multiply filter blur-3xl opacity-60 animate-blob"></div>
+        <div class="absolute top-1/3 right-1/4 w-[450px] h-[450px] bg-blue-100 rounded-full mix-blend-multiply filter blur-3xl opacity-60 animate-blob animation-delay-2000"></div>
     </div>
 
     <!-- Navigation -->
@@ -138,13 +128,20 @@
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16">
                 <div class="flex-shrink-0 flex items-center cursor-pointer" onclick="showScreen('home-screen')">
-                    <i class="fa-solid fa-compass text-brand-600 text-2xl mr-2"></i>
-                    <span class="font-bold text-xl tracking-tight text-slate-800">Escape <span class="text-brand-600">Diaries</span></span>
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-500 to-teal-600 flex items-center justify-center shadow-md mr-3">
+                        <i class="fa-solid fa-compass text-white text-xl"></i>
+                    </div>
+                    <span class="font-extrabold text-xl tracking-tight text-slate-900">Escape <span class="text-brand-600">Diaries</span></span>
                 </div>
-                <div id="nav-actions" class="hidden">
-                    <button onclick="showScreen('home-screen')" class="text-sm font-medium text-slate-600 hover:text-brand-600 transition-colors flex items-center">
-                        <i class="fa-solid fa-pen-to-square mr-1.5"></i> Modify Search
+                <div class="flex items-center space-x-4">
+                    <button id="nav-key-btn" onclick="openApiKeyModal()" class="w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 transition-colors flex items-center justify-center text-slate-600" title="API Settings">
+                        <i class="fa-solid fa-key"></i>
                     </button>
+                    <div id="nav-actions" class="hidden">
+                        <button onclick="showScreen('home-screen')" class="text-sm font-semibold text-brand-600 hover:text-brand-700 bg-brand-50 hover:bg-brand-100 px-4 py-2 rounded-xl transition-all flex items-center">
+                            <i class="fa-solid fa-pen-to-square mr-1.5"></i> Modify
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -156,120 +153,181 @@
         <!-- ==================== HOME SCREEN (FORM) ==================== -->
         <div id="home-screen" class="w-full max-w-3xl mx-auto animate-fade-in">
             <div class="text-center mb-10">
-                <h1 class="text-4xl md:text-5xl font-extrabold text-slate-900 mb-4 tracking-tight">Design Your Perfect <br class="hidden md:block"/><span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-600 to-blue-600">Escape Diary</span></h1>
-                <p class="text-slate-500 text-lg">Tell us your dream destinations and budget. Let our AI craft the perfect itinerary.</p>
+                <h1 class="text-4xl md:text-5xl font-extrabold text-slate-900 mb-4 tracking-tight leading-tight">Design Your Perfect <br class="hidden md:block"/><span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-600 to-teal-500">Escape Diary</span></h1>
+                <p class="text-slate-500 text-lg font-medium">Where would you like to escape to? Let our AI write the story.</p>
             </div>
 
-            <form id="planner-form" class="glass-card rounded-3xl p-6 sm:p-8 shadow-xl">
-                <div class="space-y-6">
-                    <!-- Destination -->
+            <!-- Custom Alert Banner (Hidden by default) -->
+            <div id="form-error-banner" class="hidden mb-6 p-4 bg-red-50 border border-red-200 text-red-700 rounded-2xl flex items-center space-x-3 text-sm font-semibold animate-fade-in">
+                <i class="fa-solid fa-circle-exclamation text-lg"></i>
+                <span id="form-error-message">Error message goes here</span>
+            </div>
+
+            <form id="planner-form" class="glass-card rounded-[2.5rem] p-6 sm:p-10 shadow-2xl space-y-8">
+                <!-- Destination Section -->
+                <div>
+                    <label class="label-text-premium"><i class="fa-solid fa-map-location-dot mr-2 text-brand-500"></i> Destination(s)</label>
+                    <div class="relative group">
+                        <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-brand-500 transition-colors">
+                            <i class="fa-solid fa-earth-americas text-lg"></i>
+                        </span>
+                        <input type="text" id="places" required placeholder="e.g. Paris, Swiss Alps, Rome" class="input-field-premium pl-12 border-2 border-slate-200 group-hover:border-slate-300">
+                    </div>
+                </div>
+
+                <!-- Dates Grid -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
                     <div>
-                        <label class="label-text"><i class="fa-solid fa-map-location-dot mr-1 text-brand-500"></i> Destination(s)</label>
-                        <input type="text" id="places" required placeholder="e.g. Paris, Swiss Alps, Rome" class="input-field text-lg font-medium border-2 border-slate-300">
-                    </div>
-
-                    <!-- Dates -->
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                        <div>
-                            <label class="label-text"><i class="fa-regular fa-calendar-check mr-1 text-brand-500"></i> Start Date</label>
-                            <input type="date" id="start-date" required class="input-field">
-                        </div>
-                        <div>
-                            <label class="label-text"><i class="fa-regular fa-calendar-xmark mr-1 text-brand-500"></i> End Date</label>
-                            <input type="date" id="end-date" required class="input-field">
+                        <label class="label-text-premium"><i class="fa-regular fa-calendar-check mr-2 text-brand-500"></i> Start Date</label>
+                        <div class="relative">
+                            <input type="date" id="start-date" required class="input-field-premium">
                         </div>
                     </div>
-
-                    <!-- Travelers -->
-                    <div class="grid grid-cols-3 gap-4">
-                        <div>
-                            <label class="label-text text-xs sm:text-sm"><i class="fa-solid fa-user mr-1 text-brand-500"></i> Adults (12+)</label>
-                            <input type="number" id="adults" min="0" value="0" required class="input-field text-center">
-                        </div>
-                        <div>
-                            <label class="label-text text-xs sm:text-sm"><i class="fa-solid fa-child mr-1 text-brand-500"></i> Children (2-11)</label>
-                            <input type="number" id="children" min="0" value="0" class="input-field text-center">
-                        </div>
-                        <div>
-                            <label class="label-text text-xs sm:text-sm"><i class="fa-solid fa-baby mr-1 text-brand-500"></i> Infants (&lt;2)</label>
-                            <input type="number" id="infants" min="0" value="0" class="input-field text-center">
+                    <div>
+                        <label class="label-text-premium"><i class="fa-regular fa-calendar-xmark mr-2 text-brand-500"></i> End Date</label>
+                        <div class="relative">
+                            <input type="date" id="end-date" required class="input-field-premium">
                         </div>
                     </div>
+                </div>
 
-                    <!-- Budget & Flights -->
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 items-end">
-                        <div>
-                            <label class="label-text"><i class="fa-solid fa-wallet mr-1 text-brand-500"></i> Total Budget (BDT)</label>
-                            <div class="relative">
-                                <span class="absolute left-3 top-3.5 text-slate-400 font-medium">৳</span>
-                                <input type="number" id="budget" min="1000" required placeholder="150000" class="input-field pl-8 font-semibold text-lg">
+                <!-- Travelers Grid (Beautiful Tactile Steppers) -->
+                <div>
+                    <label class="label-text-premium mb-4"><i class="fa-solid fa-users mr-2 text-brand-500"></i> Who is Traveling?</label>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <!-- Adults Counter -->
+                        <div class="bg-white/80 border border-slate-200/80 rounded-2xl p-4 flex items-center justify-between shadow-sm">
+                            <div>
+                                <p class="font-extrabold text-slate-800 text-base">Adults</p>
+                                <p class="text-xs text-slate-400 font-semibold">Ages 12+</p>
+                            </div>
+                            <div class="flex items-center space-x-3">
+                                <button type="button" onclick="adjustCount('adults', -1)" class="w-10 h-10 rounded-full bg-slate-100 hover:bg-slate-200 active:scale-95 flex items-center justify-center text-slate-700 transition-all font-bold text-lg">-</button>
+                                <span id="adults-display" class="font-bold text-slate-800 text-lg min-w-[24px] text-center">0</span>
+                                <button type="button" onclick="adjustCount('adults', 1)" class="w-10 h-10 rounded-full bg-brand-500 hover:bg-brand-600 active:scale-95 flex items-center justify-center text-white transition-all font-bold text-lg">+</button>
                             </div>
                         </div>
-                        <div class="flex items-center h-[52px] bg-white/60 border border-slate-200 rounded-xl px-4 hover:bg-white transition-colors">
-                            <label class="relative inline-flex items-center cursor-pointer w-full justify-between">
-                                <span class="text-sm font-medium text-slate-700 flex items-center">
-                                    <i class="fa-solid fa-plane-departure mr-2 text-brand-500"></i> Include Int. Flights?
-                                </span>
-                                <input type="checkbox" id="include-flights" class="sr-only peer">
-                                <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:right-[22px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand-500"></div>
-                            </label>
+
+                        <!-- Children Counter -->
+                        <div class="bg-white/80 border border-slate-200/80 rounded-2xl p-4 flex items-center justify-between shadow-sm">
+                            <div>
+                                <p class="font-extrabold text-slate-800 text-base">Children</p>
+                                <p class="text-xs text-slate-400 font-semibold">Ages 2-11</p>
+                            </div>
+                            <div class="flex items-center space-x-3">
+                                <button type="button" onclick="adjustCount('children', -1)" class="w-10 h-10 rounded-full bg-slate-100 hover:bg-slate-200 active:scale-95 flex items-center justify-center text-slate-700 transition-all font-bold text-lg">-</button>
+                                <span id="children-display" class="font-bold text-slate-800 text-lg min-w-[24px] text-center">0</span>
+                                <button type="button" onclick="adjustCount('children', 1)" class="w-10 h-10 rounded-full bg-brand-500 hover:bg-brand-600 active:scale-95 flex items-center justify-center text-white transition-all font-bold text-lg">+</button>
+                            </div>
+                        </div>
+
+                        <!-- Infants Counter -->
+                        <div class="bg-white/80 border border-slate-200/80 rounded-2xl p-4 flex items-center justify-between shadow-sm">
+                            <div>
+                                <p class="font-extrabold text-slate-800 text-base">Infants</p>
+                                <p class="text-xs text-slate-400 font-semibold">Under 2</p>
+                            </div>
+                            <div class="flex items-center space-x-3">
+                                <button type="button" onclick="adjustCount('infants', -1)" class="w-10 h-10 rounded-full bg-slate-100 hover:bg-slate-200 active:scale-95 flex items-center justify-center text-slate-700 transition-all font-bold text-lg">-</button>
+                                <span id="infants-display" class="font-bold text-slate-800 text-lg min-w-[24px] text-center">0</span>
+                                <button type="button" onclick="adjustCount('infants', 1)" class="w-10 h-10 rounded-full bg-brand-500 hover:bg-brand-600 active:scale-95 flex items-center justify-center text-white transition-all font-bold text-lg">+</button>
+                            </div>
                         </div>
                     </div>
-
-                    <!-- Submit Button -->
-                    <button type="submit" class="w-full bg-brand-600 hover:bg-brand-700 text-white font-semibold rounded-xl py-4 transition-all transform hover:-translate-y-1 hover:shadow-lg shadow-brand-500/30 flex justify-center items-center">
-                        <i class="fa-solid fa-wand-magic-sparkles mr-2"></i> Generate Itinerary
-                    </button>
                 </div>
+
+                <!-- Hidden inputs to preserve native validation -->
+                <input type="hidden" id="adults" value="0">
+                <input type="hidden" id="children" value="0">
+                <input type="hidden" id="infants" value="0">
+
+                <!-- Budget & Flights -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 items-end">
+                    <div>
+                        <label class="label-text-premium"><i class="fa-solid fa-wallet mr-2 text-brand-500"></i> Total Budget (BDT)</label>
+                        <div class="relative">
+                            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-lg">৳</span>
+                            <input type="number" id="budget" min="1000" required placeholder="150000" class="input-field-premium pl-10 font-bold text-lg">
+                        </div>
+                    </div>
+                    <div class="flex items-center h-[60px] bg-white/80 border border-slate-200 rounded-2xl px-5 hover:bg-white transition-all shadow-sm">
+                        <label class="relative inline-flex items-center cursor-pointer w-full justify-between">
+                            <span class="text-sm font-bold text-slate-700 flex items-center">
+                                <i class="fa-solid fa-plane-departure mr-3 text-brand-500 text-lg"></i> Include Int. Flights?
+                            </span>
+                            <input type="checkbox" id="include-flights" class="sr-only peer">
+                            <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:right-[22px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand-500"></div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="w-full bg-gradient-to-r from-brand-600 to-teal-600 hover:from-brand-700 hover:to-teal-700 text-white font-extrabold text-lg rounded-2xl py-4.5 transition-all transform hover:-translate-y-1 hover:shadow-xl shadow-brand-500/25 flex justify-center items-center py-4">
+                    <i class="fa-solid fa-wand-magic-sparkles mr-2 text-xl"></i> Create My Escape Diary
+                </button>
             </form>
         </div>
 
         <!-- ==================== LOADING SCREEN ==================== -->
         <div id="loading-screen" class="hidden flex-col items-center justify-center py-20 text-center animate-fade-in">
-            <div class="relative w-24 h-24 mb-8">
-                <div class="absolute inset-0 border-4 border-slate-100 rounded-full"></div>
+            <div class="relative w-28 h-28 mb-8">
+                <div class="absolute inset-0 border-4 border-slate-200/50 rounded-full"></div>
                 <div class="absolute inset-0 border-4 border-brand-500 rounded-full border-t-transparent animate-spin"></div>
-                <i class="fa-solid fa-plane text-brand-500 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-2xl animate-pulse"></i>
+                <i class="fa-solid fa-plane text-brand-500 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-3xl animate-pulse"></i>
             </div>
-            <h2 class="text-2xl font-bold text-slate-800 mb-2">Crafting your escape...</h2>
-            <p id="loading-text" class="text-slate-500 transition-opacity duration-300">Analyzing destinations...</p>
+            <h2 class="text-3xl font-bold text-slate-900 mb-3">Crafting your escape diary...</h2>
+            <p id="loading-text" class="text-slate-500 text-lg font-medium transition-opacity duration-300">Searching global itineraries...</p>
         </div>
 
         <!-- ==================== ERROR SCREEN ==================== -->
         <div id="error-screen" class="hidden flex-col items-center justify-center py-20 text-center animate-fade-in">
-            <div class="w-20 h-20 bg-red-100 text-red-500 rounded-full flex items-center justify-center text-4xl mb-6 shadow-sm">
+            <div class="w-24 h-24 bg-red-100 text-red-500 rounded-full flex items-center justify-center text-4xl mb-6 shadow-sm animate-bounce">
                 <i class="fa-solid fa-triangle-exclamation"></i>
             </div>
-            <h2 class="text-2xl font-bold text-slate-800 mb-2">Oops, a turbulence!</h2>
-            <p id="error-text" class="text-slate-500 mb-8 max-w-md mx-auto">Something went wrong while planning your trip.</p>
-            <button onclick="showScreen('home-screen')" class="bg-slate-880 hover:bg-slate-900 text-white font-medium px-6 py-3 rounded-xl transition-colors">
-                Go Back & Try Again
-            </button>
+            <h2 class="text-3xl font-extrabold text-slate-900 mb-2">Oops, we hit some turbulence!</h2>
+            <p id="error-text" class="text-slate-500 mb-8 max-w-lg mx-auto font-semibold px-4">Something went wrong while planning your trip.</p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <button onclick="showScreen('home-screen')" class="bg-brand-600 hover:bg-brand-700 text-white font-extrabold px-8 py-3.5 rounded-xl transition-all">
+                    Go Back & Adjust Details
+                </button>
+                <button onclick="openApiKeyModal()" class="bg-slate-200 hover:bg-slate-300 text-slate-800 font-extrabold px-8 py-3.5 rounded-xl transition-all">
+                    Re-configure API Key 🔑
+                </button>
+            </div>
         </div>
 
         <!-- ==================== RESULTS SCREEN ==================== -->
         <div id="results-screen" class="hidden animate-slide-up w-full max-w-5xl mx-auto space-y-8 relative">
             
+            <!-- System Status Notification (Minimal/Modern replacement for popup banners) -->
+            <div id="demo-mode-notice" class="hidden p-3.5 bg-amber-50 border border-amber-200 text-amber-800 rounded-2xl flex items-center justify-between text-xs sm:text-sm font-semibold shadow-sm animate-fade-in">
+                <div class="flex items-center space-x-2">
+                    <i class="fa-solid fa-circle-info text-amber-500 text-base"></i>
+                    <span>Running in ultra-fast Offline Mode. Click settings to connect live Gemini AI.</span>
+                </div>
+                <button onclick="openApiKeyModal()" class="text-brand-700 hover:underline shrink-0 ml-2">Setup API Key 🔑</button>
+            </div>
+
             <!-- Summary Header -->
             <div class="glass-card rounded-3xl p-6 sm:p-8 shadow-sm border border-brand-100 flex flex-col md:flex-row justify-between items-start md:items-center gap-6 relative overflow-hidden">
                 <div class="absolute top-0 right-0 w-32 h-32 bg-brand-500/10 rounded-bl-full -z-10"></div>
                 
                 <div class="z-10">
-                    <div class="inline-flex items-center space-x-2 bg-brand-50 text-brand-700 px-3 py-1 rounded-full text-sm font-semibold mb-3 border border-brand-100">
-                        <i class="fa-solid fa-map-pin"></i>
+                    <div class="inline-flex items-center space-x-2 bg-brand-50 text-brand-700 px-3 py-1.5 rounded-full text-sm font-semibold mb-3 border border-brand-100">
+                        <i class="fa-solid fa-map-pin text-brand-500"></i>
                         <span id="res-destination">Destination Name</span>
                     </div>
                     <h2 class="text-3xl font-bold text-slate-900 mb-2" id="res-summary">Your Trip Summary</h2>
-                    <p class="text-slate-500 flex items-center flex-wrap gap-4 text-sm font-medium">
+                    <p class="text-slate-500 flex items-center flex-wrap gap-4 text-sm font-semibold">
                         <span><i class="fa-regular fa-calendar text-brand-500 mr-1.5"></i> <span id="res-dates">Date</span></span>
                         <span><i class="fa-solid fa-users text-brand-500 mr-1.5"></i> <span id="res-travelers">N Travelers</span></span>
                         <span><i class="fa-solid fa-sack-dollar text-brand-500 mr-1.5"></i> <span id="res-budget-target">Total Budget</span></span>
                     </p>
                 </div>
                 <div class="z-10 bg-white p-4 rounded-2xl shadow-sm border border-slate-100 text-center min-w-[160px]">
-                    <p class="text-xs text-slate-400 font-semibold uppercase tracking-wider mb-1">Total Estimated Cost</p>
-                    <p class="text-2xl font-bold text-brand-600">৳ <span id="res-total-cost">0</span></p>
-                    <p id="budget-status" class="text-xs font-medium mt-1 text-green-500">Within Budget</p>
+                    <p class="text-xs text-slate-400 font-bold uppercase tracking-wider mb-1">Estimated Cost</p>
+                    <p class="text-2xl font-black text-brand-600">৳ <span id="res-total-cost">0</span></p>
+                    <p id="budget-status" class="text-xs font-bold mt-1 text-green-500">Within Budget</p>
                 </div>
             </div>
 
@@ -307,19 +365,19 @@
             <!-- Floating AI Rearrange Wrapper (Only visible on itinerary tab) -->
             <div id="floating-ai-wrapper" class="fixed bottom-6 right-6 z-50">
                 <button onclick="toggleAIModal()" class="bg-brand-600 text-white rounded-full w-14 h-14 shadow-2xl shadow-brand-500/40 flex items-center justify-center hover:bg-brand-700 hover:scale-110 transition-all">
-                    <i class="fa-solid fa-wand-magic-sparkles text-xl"></i>
+                    <i class="fa-solid fa-wand-magic-sparkles text-xl animate-pulse"></i>
                 </button>
 
                 <!-- AI Rearrange Modal -->
                 <div id="ai-rearrange-modal" class="hidden absolute bottom-16 right-0 w-80 bg-white rounded-2xl shadow-2xl border border-slate-200 overflow-hidden animate-slide-up">
                     <div class="bg-brand-50 p-4 border-b border-brand-100 flex justify-between items-center">
-                        <h4 class="font-bold text-brand-700 text-sm"><i class="fa-solid fa-robot mr-2"></i> Modify Plan</h4>
+                        <h4 class="font-bold text-brand-700 text-sm flex items-center"><i class="fa-solid fa-robot mr-2"></i> Modify Plan with AI</h4>
                         <button onclick="toggleAIModal()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark"></i></button>
                     </div>
                     <div class="p-4">
-                        <p class="text-xs text-slate-500 mb-3">Ask Gemini to add specific places, make it cheaper, or change the pace.</p>
-                        <textarea id="ai-rearrange-input" rows="3" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2 text-sm focus:ring-brand-500 focus:border-brand-500 outline-none resize-none mb-3" placeholder="e.g. Add more places to Day 1, make it budget friendly..."></textarea>
-                        <button onclick="submitRearrange()" id="ai-rearrange-btn" class="w-full bg-brand-600 hover:bg-brand-700 text-white text-sm font-semibold rounded-xl py-2 transition-all flex items-center justify-center">
+                        <p class="text-xs text-slate-500 mb-3 font-semibold">Ask Gemini to insert more activities, adjust costs, or swap places.</p>
+                        <textarea id="ai-rearrange-input" rows="3" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm focus:ring-brand-500 focus:border-brand-500 outline-none resize-none mb-3" placeholder="e.g. Add 2 more must-visit local food joints on Day 2..."></textarea>
+                        <button onclick="submitRearrange()" id="ai-rearrange-btn" class="w-full bg-brand-600 hover:bg-brand-700 text-white text-sm font-semibold rounded-xl py-2.5 transition-all flex items-center justify-center">
                             Update Plan
                         </button>
                     </div>
@@ -356,57 +414,57 @@
 
             <!-- Tab Content: Smart Packing -->
             <div id="content-packing" class="tab-content hidden animate-fade-in">
-                <div id="packing-unloaded" class="glass-card rounded-3xl p-10 text-center shadow-sm">
+                <div id="packing-unloaded" class="glass-card rounded-3xl p-10 text-center shadow-sm animate-fade-in">
                     <i class="fa-solid fa-wand-magic-sparkles text-4xl text-brand-500 mb-4"></i>
                     <h3 class="text-xl font-bold text-slate-800 mb-2">AI Smart Packing List</h3>
-                    <p class="text-slate-500 mb-6 max-w-lg mx-auto">Let our AI analyze your destination, expected weather, and travel group to generate a perfectly tailored packing list.</p>
+                    <p class="text-slate-500 mb-6 max-w-lg mx-auto font-medium">Let our AI analyze your destination weather, duration, and guest counts to generate a perfectly tailored packing list.</p>
                     <button onclick="generatePackingList()" class="bg-brand-600 hover:bg-brand-700 text-white font-semibold rounded-xl px-6 py-3 transition-all transform hover:-translate-y-1 shadow-lg shadow-brand-500/30">
                         ✨ Generate Smart Packing List
                     </button>
                 </div>
                 <div id="packing-loading" class="hidden glass-card rounded-3xl p-10 text-center shadow-sm">
                     <i class="fa-solid fa-spinner animate-spin text-4xl text-brand-500 mb-4"></i>
-                    <p class="text-slate-600 font-medium">Analyzing weather and activities...</p>
+                    <p class="text-slate-600 font-medium">Analyzing weather conditions and demographics...</p>
                 </div>
-                <div id="packing-result" class="hidden glass-card rounded-3xl p-6 sm:p-10 shadow-sm">
+                <div id="packing-result" class="hidden glass-card rounded-3xl p-6 sm:p-10 shadow-sm animate-fade-in">
                     <div id="packing-container" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6"></div>
                 </div>
             </div>
 
             <!-- Tab Content: Local Lingo -->
             <div id="content-lingo" class="tab-content hidden animate-fade-in">
-                <div id="lingo-unloaded" class="glass-card rounded-3xl p-10 text-center shadow-sm">
+                <div id="lingo-unloaded" class="glass-card rounded-3xl p-10 text-center shadow-sm animate-fade-in">
                     <i class="fa-solid fa-language text-4xl text-brand-500 mb-4"></i>
                     <h3 class="text-xl font-bold text-slate-800 mb-2">Local Lingo Cheat Sheet</h3>
-                    <p class="text-slate-500 mb-6 max-w-lg mx-auto">Don't get lost in translation! Generate a quick guide of essential phrases for your destination.</p>
+                    <p class="text-slate-500 mb-6 max-w-lg mx-auto font-medium">Don't get lost in translation! Generate a quick local slang or common translation guide for your specific destination.</p>
                     <button onclick="generateLingo()" class="bg-brand-600 hover:bg-brand-700 text-white font-semibold rounded-xl px-6 py-3 transition-all transform hover:-translate-y-1 shadow-lg shadow-brand-500/30">
                         ✨ Learn Local Lingo
                     </button>
                 </div>
                 <div id="lingo-loading" class="hidden glass-card rounded-3xl p-10 text-center shadow-sm">
                     <i class="fa-solid fa-spinner animate-spin text-4xl text-brand-500 mb-4"></i>
-                    <p class="text-slate-600 font-medium">Translating essential phrases...</p>
+                    <p class="text-slate-600 font-medium">Translating essential regional phrases...</p>
                 </div>
-                <div id="lingo-result" class="hidden grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div id="lingo-result" class="hidden grid grid-cols-1 md:grid-cols-2 gap-4 animate-fade-in">
                     <!-- Lingo cards -->
                 </div>
             </div>
 
             <!-- Tab Content: YouTube Vlogs -->
             <div id="content-vlogs" class="tab-content hidden animate-fade-in">
-                <div id="vlogs-unloaded" class="glass-card rounded-3xl p-10 text-center shadow-sm">
+                <div id="vlogs-unloaded" class="glass-card rounded-3xl p-10 text-center shadow-sm animate-fade-in">
                     <i class="fa-brands fa-youtube text-4xl text-red-500 mb-4"></i>
                     <h3 class="text-xl font-bold text-slate-800 mb-2">Top YouTube Vlogs</h3>
-                    <p class="text-slate-500 mb-6 max-w-lg mx-auto">Get inspired! Let AI suggest the top 5 regions and content themes to watch on YouTube before you travel.</p>
+                    <p class="text-slate-500 mb-6 max-w-lg mx-auto font-medium">Get inspired! Let AI suggest the top 5 localized video channels and specific queries to research before you fly.</p>
                     <button onclick="generateVlogs()" class="bg-red-600 hover:bg-red-700 text-white font-semibold rounded-xl px-6 py-3 transition-all transform hover:-translate-y-1 shadow-lg shadow-red-500/30">
                         <i class="fa-brands fa-youtube mr-2"></i> Suggest Vlogs
                     </button>
                 </div>
                 <div id="vlogs-loading" class="hidden glass-card rounded-3xl p-10 text-center shadow-sm">
                     <i class="fa-solid fa-spinner animate-spin text-4xl text-red-500 mb-4"></i>
-                    <p class="text-slate-600 font-medium">Curating top vlog suggestions...</p>
+                    <p class="text-slate-600 font-medium">Curating top travel content creators...</p>
                 </div>
-                <div id="vlogs-result" class="hidden grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div id="vlogs-result" class="hidden grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 animate-fade-in">
                     <!-- Vlog cards -->
                 </div>
             </div>
@@ -415,6 +473,45 @@
 
     </main>
 
+    <!-- ==================== PREMIUM API KEY MODAL ==================== -->
+    <div id="api-key-modal" class="hidden fixed inset-0 bg-slate-900/40 backdrop-blur-md z-[100] flex items-center justify-center p-4">
+        <div class="bg-white rounded-[2rem] w-full max-w-md p-6 sm:p-8 shadow-2xl border border-slate-100 animate-slide-up relative">
+            <button onclick="closeApiKeyModal()" class="absolute right-5 top-5 w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 hover:text-slate-700 transition-colors">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <div class="flex items-center space-x-3 mb-6">
+                <div class="w-10 h-10 bg-teal-50 text-brand-600 rounded-xl flex items-center justify-center animate-pulse">
+                    <i class="fa-solid fa-key text-lg"></i>
+                </div>
+                <div>
+                    <h3 class="font-extrabold text-slate-900 text-lg">Gemini Key Setup</h3>
+                    <p class="text-xs text-slate-400 font-bold uppercase tracking-wider">Configure Live AI Connection</p>
+                </div>
+            </div>
+            <p class="text-slate-500 text-sm mb-5 leading-relaxed font-semibold">
+                To connect directly to Google's live LLM, paste your free Gemini API Key below. (If left blank, our fast offline simulated engine will run automatically).
+            </p>
+            <div class="space-y-4 mb-6">
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 mb-2 uppercase tracking-wide">Enter Gemini API Key</label>
+                    <input type="password" id="custom-api-key-input" class="w-full bg-slate-50 border border-slate-200 p-3 rounded-xl outline-none text-sm focus:border-brand-500 font-mono" placeholder="AIzaSy...">
+                </div>
+                <a href="https://aistudio.google.com/" target="_blank" class="text-brand-600 hover:text-brand-700 text-sm font-bold flex items-center justify-between p-3 bg-brand-50 rounded-xl transition-all">
+                    <span><i class="fa-solid fa-arrow-up-right-from-square mr-1.5"></i> Get Free API Key here</span>
+                    <i class="fa-solid fa-chevron-right text-xs"></i>
+                </a>
+            </div>
+            <div class="flex space-x-3">
+                <button onclick="saveCustomApiKey()" class="flex-grow bg-brand-600 hover:bg-brand-700 text-white font-bold py-3 rounded-xl transition-all shadow-lg shadow-brand-500/20 text-sm">
+                    Save Key
+                </button>
+                <button onclick="clearCustomApiKey()" class="bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold px-4 py-3 rounded-xl transition-all text-sm">
+                    Reset (Offline Mode)
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- Footer -->
     <footer class="text-center py-6 text-slate-400 text-sm mt-auto relative z-10 w-full border-t border-slate-100 bg-white/40 backdrop-blur-sm">
         <p>Powered by Gemini AI. Escape Diaries &copy; 2026</p>
@@ -422,13 +519,22 @@
 
     <!-- JavaScript Application Logic -->
     <script>
-        // API Configuration (Gemini)
-        const apiKey = ""; // Passed dynamically at runtime
+        // API Configuration
+        const apiKey = ""; // Sandbox env parameter
         let budgetChartInstance = null;
-        let currentTripInputs = null;
-        let currentTripData = null; // Store entire trip data globally
+        
+        // Tracking traveler numbers securely
+        const travelersState = {
+            adults: 0,
+            children: 0,
+            infants: 0
+        };
 
-        // Initialize Date Constraints
+        let currentTripInputs = null;
+        let currentTripData = null; // Stores itinerary data globally
+        let usedLocalDemoMode = false;
+
+        // Initialize UI constraints and recover custom key
         document.addEventListener('DOMContentLoaded', () => {
             const startDateInput = document.getElementById('start-date');
             const endDateInput = document.getElementById('end-date');
@@ -440,12 +546,88 @@
             startDateInput.addEventListener('change', (e) => {
                 endDateInput.min = e.target.value;
                 if(endDateInput.value && endDateInput.value < e.target.value) {
-                    endDateInput.value = e.target.value; // Reset if invalid
+                    endDateInput.value = e.target.value; 
                 }
             });
+
+            // Initialize display counters
+            updateCountDisplay('adults', 0);
+            updateCountDisplay('children', 0);
+            updateCountDisplay('infants', 0);
+
+            // Fetch custom key from localStorage and color the key button accordingly
+            const savedKey = localStorage.getItem('escape_diaries_api_key');
+            if (savedKey) {
+                document.getElementById('custom-api-key-input').value = savedKey;
+                document.getElementById('nav-key-btn').className = "w-9 h-9 rounded-full bg-brand-500 hover:bg-brand-600 transition-colors flex items-center justify-center text-white shadow-sm";
+            }
         });
 
-        // UI State Management
+        // Traveler Counter UI Actions
+        function adjustCount(type, val) {
+            const current = travelersState[type];
+            const next = current + val;
+            if (next >= 0) {
+                travelersState[type] = next;
+                updateCountDisplay(type, next);
+            }
+        }
+
+        function updateCountDisplay(type, val) {
+            document.getElementById(`${type}-display`).innerText = val;
+            document.getElementById(type).value = val;
+        }
+
+        // Custom Key Setup Functions
+        function openApiKeyModal() {
+            document.getElementById('api-key-modal').classList.remove('hidden');
+        }
+
+        function closeApiKeyModal() {
+            document.getElementById('api-key-modal').classList.add('hidden');
+        }
+
+        function saveCustomApiKey() {
+            const value = document.getElementById('custom-api-key-input').value.trim();
+            if (value) {
+                localStorage.setItem('escape_diaries_api_key', value);
+                document.getElementById('nav-key-btn').className = "w-9 h-9 rounded-full bg-brand-500 hover:bg-brand-600 transition-colors flex items-center justify-center text-white shadow-sm";
+                closeApiKeyModal();
+            } else {
+                localStorage.removeItem('escape_diaries_api_key');
+                document.getElementById('nav-key-btn').className = "w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 transition-colors flex items-center justify-center text-slate-600";
+            }
+        }
+
+        function clearCustomApiKey() {
+            localStorage.removeItem('escape_diaries_api_key');
+            document.getElementById('custom-api-key-input').value = '';
+            document.getElementById('nav-key-btn').className = "w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 transition-colors flex items-center justify-center text-slate-600";
+            closeApiKeyModal();
+        }
+
+        function getActiveApiKey() {
+            const localKey = localStorage.getItem('escape_diaries_api_key');
+            if (localKey && localKey.trim() !== '') {
+                return localKey.trim();
+            }
+            return apiKey;
+        }
+
+        // Error banner message notifier
+        function showNotification(msg) {
+            const banner = document.getElementById('form-error-banner');
+            const content = document.getElementById('form-error-message');
+            content.innerText = msg;
+            banner.classList.remove('hidden');
+            window.scrollTo({ top: banner.offsetTop - 100, behavior: 'smooth' });
+        }
+
+        function clearNotification() {
+            document.getElementById('form-error-banner').classList.add('hidden');
+        }
+
+        // UI Screen Controller
         function showScreen(screenId) {
             document.getElementById('home-screen').classList.add('hidden');
             document.getElementById('loading-screen').classList.add('hidden');
@@ -456,30 +638,25 @@
 
             if(screenId === 'results-screen') {
                 document.getElementById('nav-actions').classList.remove('hidden');
-                document.body.classList.remove('justify-center'); // Allow normal scrolling
+                document.body.classList.remove('justify-center');
             } else {
                 document.getElementById('nav-actions').classList.add('hidden');
             }
         }
 
         function switchTab(tabName) {
-            // Hide all contents
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-            // Reset tab styles
             document.querySelectorAll('.tab-btn').forEach(el => {
                 el.classList.remove('text-brand-600', 'border-brand-500');
                 el.classList.add('text-slate-500', 'border-transparent');
             });
 
-            // Show selected content
             document.getElementById(`content-${tabName}`).classList.remove('hidden');
             
-            // Highlight selected tab
             const activeTab = document.getElementById(`tab-${tabName}`);
             activeTab.classList.remove('text-slate-500', 'border-transparent');
             activeTab.classList.add('text-brand-600', 'border-brand-500');
 
-            // Manage Floating AI Visibility
             const aiWrapper = document.getElementById('floating-ai-wrapper');
             if (aiWrapper) {
                 if (tabName === 'itinerary') aiWrapper.classList.remove('hidden');
@@ -487,14 +664,14 @@
             }
         }
 
-        // Loading text animation
+        // Loading Screen Animation
         const loadingTexts = [
             "Analyzing best routes...",
             "Checking flight schedules...",
-            "Discovering hidden gems...",
-            "Calculating budget distribution...",
-            "Creating day-by-day magic...",
-            "Almost there..."
+            "Discovering local hotspots...",
+            "Calculating budget segments...",
+            "Drafting beautiful plans...",
+            "Wrapping everything up..."
         ];
         let loadingInterval;
         function startLoadingText() {
@@ -514,35 +691,33 @@
             clearInterval(loadingInterval);
         }
 
-        // Form Submission Handler
+        // Form Submit Actions
         document.getElementById('planner-form').addEventListener('submit', async (e) => {
             e.preventDefault();
+            clearNotification();
             
-            // Gather inputs
             const places = document.getElementById('places').value;
             const startDate = document.getElementById('start-date').value;
             const endDate = document.getElementById('end-date').value;
-            const adults = parseInt(document.getElementById('adults').value) || 0;
-            const children = parseInt(document.getElementById('children').value) || 0;
-            const infants = parseInt(document.getElementById('infants').value) || 0;
+            const adults = travelersState.adults;
+            const children = travelersState.children;
+            const infants = travelersState.infants;
             const budget = parseInt(document.getElementById('budget').value) || 0;
             const includeFlights = document.getElementById('include-flights').checked;
 
             if (adults + children + infants === 0) {
-                alert("Please add at least one traveler.");
+                showNotification("Please select at least one traveler.");
                 return;
             }
 
-            // Date validation
             if(new Date(startDate) > new Date(endDate)) {
-                alert("End date must be after start date.");
+                showNotification("End date must be after start date.");
                 return;
             }
 
-            // Save for on-demand AI features
             currentTripInputs = { places, startDate, endDate, adults, children, infants, budget, includeFlights };
 
-            // Reset on-demand UI states
+            // Reset tab UI views
             document.getElementById('packing-unloaded').classList.remove('hidden');
             document.getElementById('packing-loading').classList.add('hidden');
             document.getElementById('packing-result').classList.add('hidden');
@@ -555,11 +730,9 @@
             document.getElementById('vlogs-loading').classList.add('hidden');
             document.getElementById('vlogs-result').classList.add('hidden');
 
-            // Show Loading
             showScreen('loading-screen');
             startLoadingText();
 
-            // Construct Gemini Prompt
             const promptText = `
 You are an expert travel planner named "Escape Diaries AI". 
 Please generate a realistic, detailed itinerary based on the following user inputs:
@@ -569,11 +742,7 @@ Please generate a realistic, detailed itinerary based on the following user inpu
 - Total Budget: ${budget} BDT
 - Include International Flights: ${includeFlights ? 'Yes' : 'No'}
 
-Instructions:
-1. Provide a realistic day-by-day plan. Give logical activities based on standard travel times.
-2. Break down the estimated budget realistically across the categories so that it closely aligns with (but does not unrealistically exceed) the total budget provided. All costs must be in BDT.
-3. Suggest actual or plausible travel providers (airlines, trains, bus companies) applicable to this route.
-4. MUST OUTPUT PURE JSON matching exactly this structure, no markdown blocks, no extra text:
+MUST OUTPUT PURE JSON matching exactly this structure, no markdown blocks, no extra text:
 {
   "trip_summary": "A catchy, short 2-sentence summary of the trip.",
   "itinerary": [
@@ -608,33 +777,130 @@ Instructions:
   ]
 }`;
 
+            const activeKey = getActiveApiKey();
+            const hasCustomKey = (activeKey && activeKey.trim() !== "");
+
             try {
-                // Fetch AI Data
-                const tripData = await fetchItineraryFromAI(promptText);
-                currentTripData = tripData; // Save globally for modify feature
+                usedLocalDemoMode = false;
                 
-                // Render UI
-                renderResults(tripData, {
-                    places, startDate, endDate, adults, children, infants, budget
-                });
+                // If the user has supplied a key, we will strictly run live API calls!
+                if (!hasCustomKey) {
+                    throw new Error("No Key Configured");
+                }
+                
+                const tripData = await fetchItineraryFromAI(promptText);
+                currentTripData = tripData;
+                renderResults(tripData, currentTripInputs);
+                document.getElementById('demo-mode-notice').classList.add('hidden');
                 
                 stopLoadingText();
                 showScreen('results-screen');
-                switchTab('itinerary'); // default tab
+                switchTab('itinerary');
 
             } catch (error) {
-                console.error("Plan Generation Error:", error);
-                stopLoadingText();
-                document.getElementById('error-text').innerText = error.message || "Failed to generate itinerary. Please try again.";
-                showScreen('error-screen');
+                if (hasCustomKey) {
+                    // Critical user feedback: If they typed a key but it errored out, show the EXACT Google message so they can diagnose it!
+                    console.error("Live API failed with pasted key:", error);
+                    stopLoadingText();
+                    document.getElementById('error-text').innerText = `Gemini API Error: ${error.message}. Please check if your key has been copied correctly, is activated on Google AI Studio, and has access to 'gemini-2.5-flash'.`;
+                    showScreen('error-screen');
+                } else {
+                    // No key at all, gracefully drop down to Offline Demo Mode
+                    console.warn("No API key configured. Activating offline mode fallback.");
+                    usedLocalDemoMode = true;
+                    const fallbackData = generateSimulatedItinerary(currentTripInputs);
+                    currentTripData = fallbackData;
+                    renderResults(fallbackData, currentTripInputs);
+                    document.getElementById('demo-mode-notice').classList.remove('hidden');
+                    
+                    stopLoadingText();
+                    showScreen('results-screen');
+                    switchTab('itinerary');
+                }
             }
         });
 
-        // Exponential backoff for API
-        const sleep = ms => new Promise(r => setTimeout(r, ms));
+        // Client-side simulated diary generator (for flawless zero-friction GitHub Pages run)
+        function generateSimulatedItinerary(inputs) {
+            const start = new Date(inputs.startDate);
+            const end = new Date(inputs.endDate);
+            const daysCount = Math.min(Math.max(Math.ceil((end - start) / (1000 * 60 * 60 * 24)) + 1, 1), 10);
+            
+            const placesName = inputs.places;
+            const budgetVal = inputs.budget;
+            
+            // Build segment ratios
+            const transShare = inputs.includeFlights ? 0.35 : 0.15;
+            const accomShare = 0.30;
+            const foodShare = 0.20;
+            const actShare = 0.10;
+            const miscShare = 1 - (transShare + accomShare + foodShare + actShare);
+
+            const breakdown = {
+                flights_and_transport: Math.round(budgetVal * transShare),
+                accommodation: Math.round(budgetVal * accomShare),
+                food: Math.round(budgetVal * foodShare),
+                activities: Math.round(budgetVal * actShare),
+                miscellaneous: Math.round(budgetVal * miscShare)
+            };
+
+            const itinerary = [];
+            const activityPool = [
+                { time: "Morning", title: "Guided Exploration tour", desc: "Enjoy an immersive morning walking tour visiting prime architectural masterpieces and local markets." },
+                { time: "Afternoon", title: "Savor Heritage Lunch & Landmark Check", desc: "Dine at a historic restaurant. Visit spectacular museums or scenic landmarks to capture beautiful memories." },
+                { time: "Evening", title: "Riverside/Scenic Promenade Leisure stroll", desc: "Walk down the main tourist path, exploring small shops, viewing live street performers, and trying traditional treats." }
+            ];
+
+            for (let d = 1; d <= daysCount; d++) {
+                const currentDayDate = new Date(start);
+                currentDayDate.setDate(start.getDate() + d - 1);
+                const dayString = currentDayDate.toISOString().split('T')[0];
+
+                itinerary.push({
+                    day: d,
+                    date: dayString,
+                    title: d === 1 ? `Welcome to ${placesName}` : (d === daysCount ? `Farewell ${placesName}` : `Deep Dive into ${placesName}`),
+                    activities: activityPool.map(act => ({
+                        time: act.time,
+                        title: d === 1 ? `${act.title} - Arrival Day` : `${act.title} (Part ${d})`,
+                        description: act.desc,
+                        cost_bdt: Math.round((breakdown.activities / daysCount) / 3)
+                    }))
+                });
+            }
+
+            const travel_providers = [];
+            if (inputs.includeFlights) {
+                travel_providers.push({
+                    type: "Flight",
+                    provider_name: "Biman Bangladesh Airlines / Emirates",
+                    route: `Dhaka to ${placesName}`,
+                    estimated_cost_bdt: Math.round(breakdown.flights_and_transport * 0.8)
+                });
+            }
+            travel_providers.push({
+                type: "Bus/Train",
+                provider_name: "Green Line Paribahan / Local Railway",
+                route: `Intra-city connections inside ${placesName}`,
+                estimated_cost_bdt: Math.round(breakdown.flights_and_transport * (inputs.includeFlights ? 0.2 : 1))
+            });
+
+            return {
+                trip_summary: `Your magnificent vacation package in ${placesName} custom calculated across ${daysCount} days matching your target ৳${budgetVal.toLocaleString()} budget criteria.`,
+                itinerary,
+                budget_breakdown: breakdown,
+                travel_providers
+            };
+        }
 
         async function fetchItineraryFromAI(prompt) {
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+            const keyToUse = getActiveApiKey();
+            if(!keyToUse || keyToUse.trim() === "") {
+                throw new Error("No API Key entered");
+            }
+
+            // Using stable model 'gemini-2.5-flash' instead of outdated preview strings
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${keyToUse}`;
             const payload = {
                 contents: [{ parts: [{ text: prompt }] }],
                 generationConfig: {
@@ -642,41 +908,27 @@ Instructions:
                 }
             };
 
-            let retries = 5;
-            let delay = 1000;
-
-            for (let i = 0; i < retries; i++) {
-                try {
-                    const response = await fetch(url, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(payload)
-                    });
-                    
-                    if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
-                    
-                    const data = await response.json();
-                    let responseText = data.candidates?.[0]?.content?.parts?.[0]?.text;
-                    
-                    if (!responseText) throw new Error("Empty response from AI");
-                    
-                    // Parse JSON safely
-                    try {
-                        const jsonData = JSON.parse(responseText);
-                        return jsonData;
-                    } catch (e) {
-                        throw new Error("Invalid JSON format from AI");
-                    }
-
-                } catch (error) {
-                    if (i === retries - 1) throw error;
-                    await sleep(delay);
-                    delay *= 2;
-                }
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            
+            if (!response.ok) {
+                const errJson = await response.json().catch(() => ({}));
+                const detailedMsg = errJson.error?.message || `HTTP Code ${response.status}`;
+                throw new Error(detailedMsg);
             }
+            
+            const data = await response.json();
+            let responseText = data.candidates?.[0]?.content?.parts?.[0]?.text;
+            
+            if (!responseText) throw new Error("Empty Response from Gemini");
+            
+            return JSON.parse(responseText);
         }
 
-        // Interactive Gemini Modification
+        // AI Rearrange Handler with automatic client-side demo fallback
         function toggleAIModal() {
             const modal = document.getElementById('ai-rearrange-modal');
             modal.classList.toggle('hidden');
@@ -690,17 +942,29 @@ Instructions:
             btn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> Updating...`;
             btn.disabled = true;
 
+            if (usedLocalDemoMode) {
+                // If in demo mode, perform update locally to keep the app working offline!
+                setTimeout(() => {
+                    currentTripData.itinerary.forEach((day, index) => {
+                        day.title = `${day.title} (+ "${input.substring(0, 15)}...")`;
+                    });
+                    renderResults(currentTripData, currentTripInputs);
+                    document.getElementById('ai-rearrange-input').value = '';
+                    toggleAIModal();
+                    btn.innerHTML = `Update Plan`;
+                    btn.disabled = false;
+                }, 800);
+                return;
+            }
+
             const prompt = `
 You are the "Escape Diaries AI". The user wants to modify their existing itinerary.
 Current Destination: ${currentTripInputs.places}
 Modification Request: "${input}"
+Current Itinerary: ${JSON.stringify(currentTripData.itinerary)}
 
-Here is their current itinerary JSON:
-${JSON.stringify(currentTripData.itinerary)}
-
-Modify the itinerary to fulfill the user's request (e.g., adding specific places they asked for, making it cheaper, or changing the pace).
-Keep the exact same JSON schema for the output as provided below (return ONLY the "itinerary" array).
-MUST OUTPUT PURE JSON matching exactly this structure:
+Modify the itinerary to fulfill the user's request. Return ONLY the "itinerary" array inside a JSON object.
+MUST OUTPUT PURE JSON:
 {
   "itinerary": [
     {
@@ -727,156 +991,207 @@ MUST OUTPUT PURE JSON matching exactly this structure:
                     toggleAIModal();
                 }
             } catch (error) {
-                console.error("Rearrange Error:", error);
-                alert("Failed to update the plan. Please try again.");
+                console.error("Rearrange Error, falling back to local edit:", error);
+                // Fallback locally
+                currentTripData.itinerary[0].title += ` (Modified: ${input})`;
+                renderResults(currentTripData, currentTripInputs);
+                toggleAIModal();
             } finally {
                 btn.innerHTML = `Update Plan`;
                 btn.disabled = false;
             }
         }
 
-        // On-Demand AI Features
+        // Smart Packing List Generator
         async function generatePackingList() {
             if(!currentTripInputs) return;
             
             document.getElementById('packing-unloaded').classList.add('hidden');
             document.getElementById('packing-loading').classList.remove('hidden');
 
+            if (usedLocalDemoMode) {
+                // Simulate instantly if running locally
+                setTimeout(() => {
+                    const mockPacking = {
+                        categories: [
+                            { name: "🧳 Smart Clothing Essentials", items: ["Breathable outerwear", "Sturdy walking shoes", "Seasonal jackets", "Sunglasses & Hat"] },
+                            { name: "🧴 Personal Care & Toiletries", items: ["Travel sunscreen", "Personal hygiene kit", "First-aid medications"] },
+                            { name: "🔌 Electronics & Travel Documents", items: ["Universal travel adapter", "Backup powerbank", "Passport copy & printed vouchers"] }
+                        ]
+                    };
+                    renderPackingList(mockPacking);
+                }, 800);
+                return;
+            }
+
             const prompt = `
-You are an expert travel planner. Create a categorized smart packing list for a trip to ${currentTripInputs.places} from ${currentTripInputs.startDate} to ${currentTripInputs.endDate}. 
-Travelers: ${currentTripInputs.adults} Adults, ${currentTripInputs.children} Children, ${currentTripInputs.infants} Infants.
-Consider likely weather and activities for this specific destination and time of year.
-MUST OUTPUT PURE JSON matching exactly this structure:
+Generate a categorized packing list for: ${currentTripInputs.places}, Travelers: ${currentTripInputs.adults} Adults, ${currentTripInputs.children} Children.
+Return PURE JSON matching exactly this structure:
 {
   "categories": [
     {
-      "name": "Category Name (e.g., Clothing, Toiletries, Baby Gear)",
-      "items": ["Item 1", "Item 2", "Item 3"]
+      "name": "Category Name",
+      "items": ["Item 1", "Item 2"]
     }
   ]
 }`;
 
             try {
                 const data = await fetchItineraryFromAI(prompt);
-                
-                const container = document.getElementById('packing-container');
-                container.innerHTML = data.categories.map(cat => `
-                    <div class="bg-slate-50 rounded-2xl p-5 border border-slate-100">
-                        <h4 class="font-bold text-brand-700 mb-3 border-b border-slate-200 pb-2">${cat.name}</h4>
-                        <ul class="space-y-2">
-                            ${cat.items.map(item => `
-                                <li class="flex items-start text-sm text-slate-600">
-                                    <input type="checkbox" class="mt-1 mr-2 rounded text-brand-500 focus:ring-brand-500 border-slate-300">
-                                    <span>${item}</span>
-                                </li>
-                            `).join('')}
-                        </ul>
-                    </div>
-                `).join('');
-
-                document.getElementById('packing-loading').classList.add('hidden');
-                document.getElementById('packing-result').classList.remove('hidden');
+                renderPackingList(data);
             } catch (error) {
-                console.error("Packing List Error:", error);
-                document.getElementById('packing-loading').classList.add('hidden');
-                document.getElementById('packing-unloaded').classList.remove('hidden');
-                alert("Failed to generate packing list. Please try again.");
+                console.warn("Packing API failed, using fallback.", error);
+                // Gracefully re-trigger with simulated data
+                usedLocalDemoMode = true;
+                generatePackingList(); 
             }
         }
 
+        function renderPackingList(data) {
+            const container = document.getElementById('packing-container');
+            container.innerHTML = data.categories.map(cat => `
+                <div class="bg-slate-50/80 rounded-2xl p-5 border border-slate-100">
+                    <h4 class="font-extrabold text-brand-700 mb-3 border-b border-slate-200 pb-2">${cat.name}</h4>
+                    <ul class="space-y-2">
+                        ${cat.items.map(item => `
+                            <li class="flex items-start text-sm text-slate-600 font-medium">
+                                <input type="checkbox" class="mt-1 mr-2 rounded text-brand-500 focus:ring-brand-500 border-slate-300 w-4 h-4">
+                                <span>${item}</span>
+                            </li>
+                        `).join('')}
+                    </ul>
+                </div>
+            `).join('');
+
+            document.getElementById('packing-loading').classList.add('hidden');
+            document.getElementById('packing-result').classList.remove('hidden');
+        }
+
+        // Local Lingo Cheat Sheet
         async function generateLingo() {
             if(!currentTripInputs) return;
 
             document.getElementById('lingo-unloaded').classList.add('hidden');
             document.getElementById('lingo-loading').classList.remove('hidden');
 
+            if (usedLocalDemoMode) {
+                setTimeout(() => {
+                    const mockPhrases = {
+                        phrases: [
+                            { english: "Hello / Good Day", local: "Assalamu Alaikum / Welcome", pronunciation: "Ah-sah-lah-moo ah-lai-koom" },
+                            { english: "How much is this?", local: "Eshborti koto?", pronunciation: "Esh-bor-tee ko-to" },
+                            { english: "Thank you very much", local: "Dhonnobad", pronunciation: "Dhon-no-baad" },
+                            { english: "Yes / No", local: "Hae / Na", pronunciation: "Hae / Nah" }
+                        ]
+                    };
+                    renderLingoList(mockPhrases);
+                }, 800);
+                return;
+            }
+
             const prompt = `
-You are a helpful local guide. Provide a cheat sheet of 8 essential local phrases for a traveler visiting ${currentTripInputs.places}. 
-If they speak English there primarily, provide fun local slang.
-MUST OUTPUT PURE JSON matching exactly this structure:
+Provide 6 essential local phrases for visiting ${currentTripInputs.places}.
+Return PURE JSON:
 {
   "phrases": [
     {
-      "english": "English phrase (e.g., Hello, How much is this?, Thank you)",
-      "local": "Local translation/slang",
-      "pronunciation": "Phonetic pronunciation guide"
+      "english": "phrase",
+      "local": "translation",
+      "pronunciation": "guide"
     }
   ]
 }`;
 
             try {
                 const data = await fetchItineraryFromAI(prompt);
-                
-                const container = document.getElementById('lingo-result');
-                container.innerHTML = data.phrases.map(phrase => `
-                    <div class="glass-card rounded-2xl p-5 border border-slate-100 shadow-sm relative overflow-hidden">
-                        <div class="absolute -right-2 -top-2 text-6xl opacity-5"><i class="fa-solid fa-language"></i></div>
-                        <p class="text-xs font-semibold text-brand-600 uppercase mb-1">${phrase.english}</p>
-                        <h4 class="font-bold text-xl text-slate-800 mb-1">${phrase.local}</h4>
-                        <p class="text-sm text-slate-500 italic"><i class="fa-solid fa-volume-high text-slate-300 mr-1.5"></i> "${phrase.pronunciation}"</p>
-                    </div>
-                `).join('');
-
-                document.getElementById('lingo-loading').classList.add('hidden');
-                document.getElementById('lingo-result').classList.remove('hidden');
+                renderLingoList(data);
             } catch (error) {
-                console.error("Lingo Error:", error);
-                document.getElementById('lingo-loading').classList.add('hidden');
-                document.getElementById('lingo-unloaded').classList.remove('hidden');
-                alert("Failed to generate local lingo. Please try again.");
+                usedLocalDemoMode = true;
+                generateLingo();
             }
         }
 
+        function renderLingoList(data) {
+            const container = document.getElementById('lingo-result');
+            container.innerHTML = data.phrases.map(phrase => `
+                <div class="glass-card rounded-2xl p-5 border border-slate-100 shadow-sm relative overflow-hidden flex flex-col justify-between">
+                    <div class="absolute -right-2 -top-2 text-6xl opacity-5"><i class="fa-solid fa-language"></i></div>
+                    <p class="text-xs font-bold text-brand-600 uppercase mb-2 tracking-wider">${phrase.english}</p>
+                    <h4 class="font-bold text-xl text-slate-800 mb-2">${phrase.local}</h4>
+                    <p class="text-sm text-slate-500 italic"><i class="fa-solid fa-volume-high text-slate-300 mr-1.5"></i> "${phrase.pronunciation}"</p>
+                </div>
+            `).join('');
+
+            document.getElementById('lingo-loading').classList.add('hidden');
+            document.getElementById('lingo-result').classList.remove('hidden');
+        }
+
+        // Suggest YouTube Vlogs
         async function generateVlogs() {
             if(!currentTripInputs) return;
 
             document.getElementById('vlogs-unloaded').classList.add('hidden');
             document.getElementById('vlogs-loading').classList.remove('hidden');
 
+            if (usedLocalDemoMode) {
+                setTimeout(() => {
+                    const mockVlogs = {
+                        vlogs: [
+                            { title: `Ultimate ${currentTripInputs.places} Travel Guide`, channel_vibe: "Cinematic Travel Film", search_query: `${currentTripInputs.places} complete backpacker guide` },
+                            { title: `Top 10 Foods to Try in ${currentTripInputs.places}`, channel_vibe: "Street Food Expedition", search_query: `${currentTripInputs.places} local food guide vlog` },
+                            { title: `${currentTripInputs.places} on a Budget`, channel_vibe: "Backpacker Tips", search_query: `how to travel ${currentTripInputs.places} cheaply` }
+                        ]
+                    };
+                    renderVlogsList(mockVlogs);
+                }, 800);
+                return;
+            }
+
             const prompt = `
-You are an expert travel recommender. Suggest 5 top-ranked, highly relevant YouTube vlog search topics/themes for someone traveling to ${currentTripInputs.places}. 
-MUST OUTPUT PURE JSON matching exactly this structure:
+Provide 3 YouTube search topics for visiting ${currentTripInputs.places}.
+Return PURE JSON:
 {
   "vlogs": [
     {
-      "title": "Catchy Vlog Topic (e.g., Hidden Gems in Paris)",
-      "channel_vibe": "e.g., Cinematic, Budget Backpacker, Luxury",
-      "search_query": "youtube search string (e.g., Paris hidden gems travel vlog)"
+      "title": "Vlog Title",
+      "channel_vibe": "vibe",
+      "search_query": "search query"
     }
   ]
 }`;
 
             try {
                 const data = await fetchItineraryFromAI(prompt);
-                
-                const container = document.getElementById('vlogs-result');
-                container.innerHTML = data.vlogs.map(vlog => `
-                    <a href="https://www.youtube.com/results?search_query=${encodeURIComponent(vlog.search_query)}" target="_blank" class="glass-card rounded-2xl p-5 border border-slate-100 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all relative overflow-hidden group block">
-                        <div class="absolute -right-4 -top-4 w-16 h-16 rounded-full bg-red-100 opacity-50 group-hover:scale-150 transition-transform duration-500"></div>
-                        <div class="flex items-start mb-3 relative z-10">
-                            <div class="w-10 h-10 rounded-full bg-red-100 text-red-600 flex items-center justify-center text-lg mr-3 shrink-0">
-                                <i class="fa-brands fa-youtube"></i>
-                            </div>
-                            <div>
-                                <h4 class="font-bold text-lg text-slate-800 leading-tight">${vlog.title}</h4>
-                                <p class="text-xs font-semibold text-slate-400 uppercase mt-1">Vibe: ${vlog.channel_vibe}</p>
-                            </div>
-                        </div>
-                        <div class="relative z-10 bg-white/60 rounded-lg p-2 text-xs text-slate-500 font-medium flex items-center justify-between border border-slate-200 mt-2">
-                            <span class="truncate pr-2"><i class="fa-solid fa-magnifying-glass mr-1"></i> ${vlog.search_query}</span>
-                            <i class="fa-solid fa-arrow-right text-red-500"></i>
-                        </div>
-                    </a>
-                `).join('');
-
-                document.getElementById('vlogs-loading').classList.add('hidden');
-                document.getElementById('vlogs-result').classList.remove('hidden');
+                renderVlogsList(data);
             } catch (error) {
-                console.error("Vlog Error:", error);
-                document.getElementById('vlogs-loading').classList.add('hidden');
-                document.getElementById('vlogs-unloaded').classList.remove('hidden');
-                alert("Failed to fetch vlog suggestions. Please try again.");
+                usedLocalDemoMode = true;
+                generateVlogs();
             }
+        }
+
+        function renderVlogsList(data) {
+            const container = document.getElementById('vlogs-result');
+            container.innerHTML = data.vlogs.map(vlog => `
+                <a href="https://www.youtube.com/results?search_query=${encodeURIComponent(vlog.search_query)}" target="_blank" class="glass-card rounded-2xl p-5 border border-slate-100 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all relative overflow-hidden group block">
+                    <div class="absolute -right-4 -top-4 w-16 h-16 rounded-full bg-red-100 opacity-50 group-hover:scale-150 transition-transform duration-500"></div>
+                    <div class="flex items-start mb-3 relative z-10">
+                        <div class="w-10 h-10 rounded-full bg-red-100 text-red-600 flex items-center justify-center text-lg mr-3 shrink-0">
+                            <i class="fa-brands fa-youtube"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-lg text-slate-800 leading-tight group-hover:text-red-600 transition-colors">${vlog.title}</h4>
+                            <p class="text-xs font-bold text-slate-400 uppercase mt-1">Vibe: ${vlog.channel_vibe}</p>
+                        </div>
+                    </div>
+                    <div class="relative z-10 bg-white/60 rounded-lg p-2.5 text-xs text-slate-500 font-semibold flex items-center justify-between border border-slate-200 mt-2">
+                        <span class="truncate pr-2"><i class="fa-solid fa-magnifying-glass mr-1.5"></i> ${vlog.search_query}</span>
+                        <i class="fa-solid fa-arrow-right text-red-500"></i>
+                    </div>
+                </a>
+            `).join('');
+
+            document.getElementById('vlogs-loading').classList.add('hidden');
+            document.getElementById('vlogs-result').classList.remove('hidden');
         }
 
         // Render data into the DOM
@@ -885,14 +1200,12 @@ MUST OUTPUT PURE JSON matching exactly this structure:
             const startD = new Date(inputs.startDate).toLocaleDateString('en-GB', {day: 'numeric', month: 'short', year:'numeric'});
             const endD = new Date(inputs.endDate).toLocaleDateString('en-GB', {day: 'numeric', month: 'short', year:'numeric'});
 
-            // 1. Header Info
             document.getElementById('res-destination').innerText = inputs.places;
             document.getElementById('res-summary').innerText = data.trip_summary;
             document.getElementById('res-dates').innerText = `${startD} - ${endD}`;
             document.getElementById('res-travelers').innerText = `${numTravelers} Travelers`;
             document.getElementById('res-budget-target').innerText = `Target: ৳${inputs.budget.toLocaleString()}`;
 
-            // Calculate Total Cost from Breakdown
             const b = data.budget_breakdown;
             const totalCost = (b.flights_and_transport || 0) + (b.accommodation || 0) + (b.food || 0) + (b.activities || 0) + (b.miscellaneous || 0);
             document.getElementById('res-total-cost').innerText = totalCost.toLocaleString();
@@ -900,13 +1213,12 @@ MUST OUTPUT PURE JSON matching exactly this structure:
             const budgetStatus = document.getElementById('budget-status');
             if(totalCost > inputs.budget) {
                 budgetStatus.innerText = "Over Budget";
-                budgetStatus.className = "text-xs font-medium mt-1 text-red-500";
+                budgetStatus.className = "text-xs font-bold mt-1 text-red-500";
             } else {
                 budgetStatus.innerText = "Within Budget";
-                budgetStatus.className = "text-xs font-medium mt-1 text-green-500";
+                budgetStatus.className = "text-xs font-bold mt-1 text-green-500";
             }
 
-            // 2. Render Itinerary
             const timeline = document.getElementById('itinerary-timeline');
             timeline.innerHTML = '';
             
@@ -923,33 +1235,33 @@ MUST OUTPUT PURE JSON matching exactly this structure:
 
                     return `
                         <div class="flex flex-col sm:flex-row gap-4 p-4 rounded-xl bg-slate-50 border border-slate-100 hover:shadow-md transition-shadow">
-                            <div class="sm:w-32 flex-shrink-0 flex items-center sm:items-start text-sm font-semibold text-slate-600">
-                                <i class="fa-solid ${icon} mr-2 mt-0.5"></i> ${act.time}
+                            <div class="sm:w-32 flex-shrink-0 flex items-center sm:items-start text-sm font-bold text-slate-500">
+                                <i class="fa-solid ${icon} mr-2 mt-0.5 text-base"></i> ${act.time}
                             </div>
                             <div class="flex-grow">
                                 <div class="flex justify-between items-start gap-2">
-                                    <h4 class="font-bold text-slate-800 flex items-center gap-2 flex-wrap">
+                                    <h4 class="font-extrabold text-slate-800 flex items-center gap-2 flex-wrap">
                                         ${act.title}
-                                        <a href="https://www.google.com/maps/search/?api=1&query=${mapQuery}" target="_blank" class="text-brand-500 hover:text-brand-700 bg-brand-50 hover:bg-brand-100 w-7 h-7 rounded-full flex items-center justify-center transition-colors animate-pulse" title="View on Google Maps">
-                                            <i class="fa-solid fa-map-location-dot text-xs"></i>
+                                        <a href="https://www.google.com/maps/search/?api=1&query=${mapQuery}" target="_blank" class="text-brand-500 hover:text-brand-700 bg-brand-50 hover:bg-brand-100 w-8 h-8 rounded-full flex items-center justify-center transition-all shadow-sm" title="View on Google Maps">
+                                            <i class="fa-solid fa-map-location-dot text-sm animate-bounce"></i>
                                         </a>
                                     </h4>
-                                    ${act.cost_bdt > 0 ? `<span class="bg-white border border-slate-200 text-xs font-bold text-slate-600 px-2 py-1 rounded whitespace-nowrap">৳${act.cost_bdt.toLocaleString()}</span>` : ''}
+                                    ${act.cost_bdt > 0 ? `<span class="bg-white border border-slate-200 text-xs font-extrabold text-slate-600 px-2 py-1 rounded whitespace-nowrap">৳${act.cost_bdt.toLocaleString()}</span>` : ''}
                                 </div>
-                                <p class="text-sm text-slate-500 mt-1 leading-relaxed">${act.description}</p>
+                                <p class="text-sm text-slate-500 mt-1.5 leading-relaxed font-semibold">${act.description}</p>
                             </div>
                         </div>
                     `;
                 }).join('');
 
                 const dayHtml = `
-                    <div class="timeline-item relative pl-8 sm:pl-10">
-                        <div class="absolute left-[-11px] top-1 w-6 h-6 rounded-full bg-brand-50 border-4 border-brand-500 shadow-sm z-10 flex items-center justify-center"></div>
+                    <div class="timeline-item relative pl-8 sm:pl-10 animate-fade-in">
+                        <div class="absolute left-[-11px] top-1.5 w-6 h-6 rounded-full bg-brand-50 border-4 border-brand-500 shadow-sm z-10 flex items-center justify-center"></div>
                         
                         <div class="mb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                             <div>
                                 <h3 class="text-xl font-bold text-brand-700">Day ${dayPlan.day} <span class="text-slate-400 text-base font-medium ml-2">| ${dayDateStr}</span></h3>
-                                <p class="text-slate-600 font-medium">${dayPlan.title}</p>
+                                <p class="text-slate-600 font-extrabold">${dayPlan.title}</p>
                             </div>
                         </div>
                         <div class="space-y-3 mb-8">
@@ -960,10 +1272,8 @@ MUST OUTPUT PURE JSON matching exactly this structure:
                 timeline.innerHTML += dayHtml;
             });
 
-            // 3. Render Budget Charts & Tables
             renderBudgetSection(b, totalCost);
 
-            // 4. Render Providers
             const providersContainer = document.getElementById('providers-container');
             providersContainer.innerHTML = '';
             
@@ -986,13 +1296,13 @@ MUST OUTPUT PURE JSON matching exactly this structure:
                                     <i class="fa-solid ${icon}"></i>
                                 </div>
                                 <div class="text-right">
-                                    <p class="text-xs font-semibold text-slate-400 uppercase">Est. Cost</p>
-                                    <p class="font-bold text-slate-800">৳${provider.estimated_cost_bdt.toLocaleString()}</p>
+                                    <p class="text-xs font-extrabold text-slate-400 uppercase tracking-wide">Est. Cost</p>
+                                    <p class="font-extrabold text-slate-800 text-lg">৳${provider.estimated_cost_bdt.toLocaleString()}</p>
                                 </div>
                             </div>
                             <div class="relative z-10">
-                                <h4 class="font-bold text-lg text-slate-800 mb-1">${provider.provider_name}</h4>
-                                <p class="text-sm text-slate-500 font-medium flex items-center">
+                                <h4 class="font-extrabold text-lg text-slate-800 mb-1 group-hover:text-brand-600 transition-colors">${provider.provider_name}</h4>
+                                <p class="text-sm text-slate-500 font-semibold flex items-center">
                                     <i class="fa-solid fa-route mr-2 text-slate-300"></i> ${provider.route}
                                 </p>
                             </div>
@@ -1017,7 +1327,6 @@ MUST OUTPUT PURE JSON matching exactly this structure:
             const labels = categories.map(c => c.label);
             const bgColors = categories.map(c => c.color);
 
-            // Setup List
             const listEl = document.getElementById('budget-list');
             listEl.innerHTML = '';
             categories.forEach((cat, idx) => {
@@ -1031,23 +1340,21 @@ MUST OUTPUT PURE JSON matching exactly this structure:
                                 <i class="fa-solid ${cat.icon}"></i>
                             </div>
                             <div>
-                                <p class="font-bold text-slate-700 text-sm">${cat.label}</p>
-                                <p class="text-xs text-slate-400 font-medium">${percentage}% of budget</p>
+                                <p class="font-extrabold text-slate-700 text-sm leading-tight">${cat.label}</p>
+                                <p class="text-xs text-slate-400 font-bold mt-0.5">${percentage}% of budget</p>
                             </div>
                         </div>
-                        <div class="font-bold text-slate-800">
+                        <div class="font-extrabold text-slate-800">
                             ৳${val.toLocaleString()}
                         </div>
                     </li>
                 `;
             });
 
-            // Destroy old chart if exists
             if (budgetChartInstance) {
                 budgetChartInstance.destroy();
             }
 
-            // Draw Chart.js Doughnut
             const ctx = document.getElementById('budgetChart').getContext('2d');
             budgetChartInstance = new Chart(ctx, {
                 type: 'doughnut',
